@@ -134,8 +134,7 @@ const PantrySearch = ({ ingredients, options }: Props) => {
                 name="ingredients"
                 value={ingredient.name}
                 checked={promptParams.selectedIngredients.some(
-                  (selectedIngredient) =>
-                    selectedIngredient.name === ingredient.name
+                  (selected) => selected.name === ingredient.name
                 )}
                 onChange={handleCheckboxChange}
               />

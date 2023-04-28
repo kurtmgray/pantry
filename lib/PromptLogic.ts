@@ -8,11 +8,20 @@ import { Configuration, OpenAIApi } from "openai";
 // console.log(openai);
 
 export const handler = async (promptParams: PromptParams) => {
-  const { selectedIngredients, allergies } = promptParams;
-  const { cuisines, dietaryPreferences, maxPrepTimeOptions, difficulty } =
-    promptParams.selectedMenuOptions;
+  const {
+    selectedIngredients,
+    allergies,
+    cuisines,
+    dietaryPreferences,
+    maxPrepTimeOptions,
+    difficulty,
+  } = promptParams;
   try {
-    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend a recipe that contains salmon and cucumbers and includes up to 15 other ingredients.`;
+    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend ${5} recipes that contains ${[
+      ...selectedIngredients,
+    ]}, in as many of the following stles as possible: ${cuisines}. Be sensitive to all of the following dietary preferences: ${[
+      ...dietaryPreferences,
+    ]}. Choose recipes whose combined prep and cook time are at or under ${30} minutes, and a difficulty of up to ${difficulty}`;
     const response: CreateCompletionResponse = await generateRecipe(prompt);
     return {
       statusCode: 200,
@@ -22,7 +31,7 @@ export const handler = async (promptParams: PromptParams) => {
     console.log(err);
     return {
       statusCode: 500,
-      body: "Error generating lesson plan",
+      body: "Error generating recipes.",
     };
   }
 };
