@@ -1,5 +1,10 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 type Props = {
   ingredients: PantryItem[];
@@ -10,7 +15,7 @@ const PantrySearch = ({ ingredients, options }: Props) => {
   const { cuisines, dietaryPreferences } = options;
   const initPromptParamsState: PromptParams = {
     selectedIngredients: [],
-    allergies: "",
+    allergies: [],
     cuisines: [],
     dietaryPreferences: [],
     maxPrepTimeOptions: "",
@@ -20,6 +25,7 @@ const PantrySearch = ({ ingredients, options }: Props) => {
   const [promptParams, setPromptParams] = useState<PromptParams>(
     initPromptParamsState
   );
+  const [newAllergy, setNewAllergy] = useState("");
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -30,23 +36,19 @@ const PantrySearch = ({ ingredients, options }: Props) => {
     switch (name) {
       case "ingredients":
         if (checked) {
-          console.log("hi");
-          const checkedIngredient = ingredients.find(
-            (ingredient) => ingredient.name === value
-          );
-          checkedIngredient &&
-            setPromptParams({
-              ...promptParams,
-              selectedIngredients: [
-                ...promptParams.selectedIngredients,
-                checkedIngredient,
-              ],
-            });
+          // const checkedIngredient = ingredients.find(
+          //   (ingredient) => ingredient.name === value
+          // );
+          // checkedIngredient &&
+          setPromptParams({
+            ...promptParams,
+            selectedIngredients: [...promptParams.selectedIngredients, value],
+          });
         } else {
           setPromptParams({
             ...promptParams,
             selectedIngredients: promptParams.selectedIngredients.filter(
-              (ingredient) => ingredient.name !== value
+              (ingredient) => ingredient !== value
             ),
           });
         }
@@ -98,21 +100,66 @@ const PantrySearch = ({ ingredients, options }: Props) => {
     }
   };
 
+  const handleAddAllergies = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const { allergies } = event.currentTarget
+      .elements as typeof event.currentTarget.elements & {
+      allergies: { value: string };
+    };
+
+    setPromptParams({
+      ...promptParams,
+      allergies: [...promptParams.allergies, allergies.value],
+    });
+
+    setNewAllergy("");
+  };
+
+  const handleDifficultyChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedDifficulty = event.target.value;
+    setPromptParams({
+      ...promptParams,
+      difficulty: selectedDifficulty,
+    });
+  };
+
   return (
     <div>
       <h2>Pantry</h2>
-      <h3>Selected Options:</h3>
+      <h3>Selected Ingredients:</h3>
       <ul>
         {promptParams.selectedIngredients.map((ingredient) => (
-          <li key={ingredient.id}>{ingredient.name}</li>
+          <li key={ingredient}>{ingredient}</li>
         ))}
+      </ul>
+      <h3>Selected Cuisines:</h3>
+
+      <ul>
         {promptParams.cuisines.map((cuisine) => (
           <li key={cuisine}>{cuisine}</li>
         ))}
-        {promptParams.dietaryPreferences.map((dietaryPreferences) => (
-          <li key={dietaryPreferences}>{dietaryPreferences}</li>
+      </ul>
+
+      <h3>Selected Dietary Preferences:</h3>
+      <ul>
+        {promptParams.dietaryPreferences.map((dietaryPreference) => (
+          <li key={dietaryPreference}>{dietaryPreference}</li>
         ))}
       </ul>
+      <h3>Allergies:</h3>
+      <ul>
+        {promptParams.allergies.map((allergy) => (
+          <li key={allergy}>{allergy}</li>
+        ))}
+      </ul>
+      <h3>Difficulty:</h3>
+
+      {promptParams.difficulty === "" ? null : (
+        <ul>
+          {" "}
+          <li>{promptParams.difficulty}</li>{" "}
+        </ul>
+      )}
 
       <input
         type="text"
@@ -120,6 +167,25 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         value={searchTerm}
         onChange={handleSearch}
       />
+      <form onSubmit={handleAddAllergies}>
+        <input
+          type="text"
+          name="allergies"
+          placeholder="Allergies"
+          value={newAllergy}
+          onChange={(e) => setNewAllergy(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+
+      <select value={promptParams.difficulty} onChange={handleDifficultyChange}>
+        <option value="">Select Difficulty</option>
+        {options.difficulty.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
 
       <ul>
         {ingredients
@@ -134,7 +200,7 @@ const PantrySearch = ({ ingredients, options }: Props) => {
                 name="ingredients"
                 value={ingredient.name}
                 checked={promptParams.selectedIngredients.some(
-                  (selected) => selected.name === ingredient.name
+                  (selected) => selected === ingredient.name
                 )}
                 onChange={handleCheckboxChange}
               />

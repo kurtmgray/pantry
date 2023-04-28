@@ -14,12 +14,12 @@ type PantryItem = {
 };
 
 type PromptParams = {
-  selectedIngredients: PantryItem[];
+  selectedIngredients: string[];
   cuisines: string[];
   dietaryPreferences: string[];
   maxPrepTimeOptions: number | string;
   difficulty: Difficulty;
-  allergies: string;
+  allergies: string[];
 };
 
 type MenuOptions = {

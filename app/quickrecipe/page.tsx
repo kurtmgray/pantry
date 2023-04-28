@@ -22,8 +22,8 @@ function Menu() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const data = await handler(formValues);
-          setResponse(data);
+          // const data = await handler(formValues);
+          // setResponse(data);
         }}
       >
         <label htmlFor="gradeLevel">Choose a Grade Level:</label>
@@ -35,11 +35,11 @@ function Menu() {
             setFormValues({ ...formValues, [e.target.name]: e.target.value });
           }}
         >
-          {menuOptions["gradeLevel"].map((level, idx) => (
+          {/* {menuOptions["gradeLevel"].map((level, idx) => (
             <option value={level} key={idx}>
               {level}
             </option>
-          ))}
+          ))} */}
         </select>
         <label htmlFor="subjectArea">Choose a Subject Area:</label>
         <select
@@ -50,11 +50,11 @@ function Menu() {
             setFormValues({ ...formValues, [e.target.name]: e.target.value });
           }}
         >
-          {menuOptions["subjectArea"].map((subject, idx) => (
+          {/* {menuOptions["subjectArea"].map((subject, idx) => (
             <option value={formatValue(subject)} key={idx}>
               {subject}
             </option>
-          ))}
+          ))} */}
         </select>
         <label htmlFor="numLearningObjectives">Learning Objectives:</label>
         <select
@@ -65,13 +65,13 @@ function Menu() {
             setFormValues({ ...formValues, [e.target.name]: e.target.value });
           }}
         >
-          {Array(menuOptions["learningObjectivesMax"])
+          {/* {Array(menuOptions["learningObjectivesMax"])
             .fill("")
             .map((_max, idx) => (
               <option value={idx + 1} key={idx}>
                 {idx + 1}
               </option>
-            ))}
+            ))} */}
         </select>
         <label htmlFor="unit">Unit:</label>
         <input
