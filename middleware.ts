@@ -4,5 +4,6 @@ export const config = {
   matcher: [
     "/dashboard/",
     "/app/:path*", // protects app and all subdirectories
+    "/pantry",
   ],
 };

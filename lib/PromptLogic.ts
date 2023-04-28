@@ -7,7 +7,10 @@ import { Configuration, OpenAIApi } from "openai";
 // const openai = new OpenAIApi(configuration);
 // console.log(openai);
 
-export const handler = async (event: FormValues) => {
+export const handler = async (promptParams: PromptParams) => {
+  const { selectedIngredients, allergies } = promptParams;
+  const { cuisines, dietaryPreferences, maxPrepTimeOptions, difficulty } =
+    promptParams.selectedMenuOptions;
   try {
     const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend a recipe that contains salmon and cucumbers and includes up to 15 other ingredients.`;
     const response: CreateCompletionResponse = await generateRecipe(prompt);

@@ -3,20 +3,28 @@ interface CreateCompletionResponseData {
   object: string;
   created: number;
   model: string;
-  choices: any[];
+  choices: string[];
 }
 
 type CreateCompletionResponse = AxiosResponse<CreateCompletionResponseData>;
 
-type MenuOptions = {
-  gradeLevel: number[];
-  subjectArea: string[];
-  learningObjectivesMax: number;
+type PantryItem = {
+  id: number;
+  name: string;
 };
 
-type FormValues = {
-  gradeLevel: string;
-  subjectArea: string;
-  numLearningObjectives: string;
-  unit: string;
+type PromptParams = {
+  selectedIngredients: PantryItem[];
+  cuisines: string[];
+  dietaryPreferences: string[];
+  maxPrepTimeOptions: number | string;
+  difficulty: Difficulty;
+  allergies: string;
+};
+
+type MenuOptions = {
+  cuisines: string[];
+  dietaryPreferences: string[];
+  maxPrepTimeOptions: number[] | null;
+  difficulty: string[];
 };
