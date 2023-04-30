@@ -7,21 +7,17 @@ import { Configuration, OpenAIApi } from "openai";
 // const openai = new OpenAIApi(configuration);
 // console.log(openai);
 
-export const handler = async (promptParams: PromptParams) => {
+export const getRecipe = async (promptParams: PromptParams) => {
   const {
     selectedIngredients,
     allergies,
     cuisines,
     dietaryPreferences,
-    maxPrepTimeOptions,
+    maxPrepTime,
     difficulty,
   } = promptParams;
   try {
-    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend ${5} recipes that contains ${[
-      ...selectedIngredients,
-    ]}, in as many of the following stles as possible: ${cuisines}. Be sensitive to all of the following dietary preferences: ${[
-      ...dietaryPreferences,
-    ]}. Choose recipes whose combined prep and cook time are at or under ${30} minutes, and a difficulty of up to ${difficulty}`;
+    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend ${5} recipes that contains ${selectedIngredients}, in as many of the following stles as possible: ${cuisines}. Be sensitive to all of the following dietary preferences: ${dietaryPreferences} and allergies: ${allergies}. Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. Please send your recipes back in paragraph form, with new lines for every recipe.`;
     const response: CreateCompletionResponse = await generateRecipe(prompt);
     return {
       statusCode: 200,
@@ -37,14 +33,12 @@ export const handler = async (promptParams: PromptParams) => {
 };
 
 // async
-console.log(process.env.OPENAI_API_KEY);
 function getApiKey() {
-  const key = process.env.OPENAI_API_KEY;
   // API key stored at AWS Systems Manager endpoint
   // console.log(await ssm.getParameter({ Name: "/openai/api_key" }));
   // const ssmParam = await ssm.getParameter({ Name: "/openai/api_key" });
   // return ssmParam.Parameter.Value;
-  return key;
+  return process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 }
 
 async function generateRecipe(prompt: string) {

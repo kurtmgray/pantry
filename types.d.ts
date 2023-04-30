@@ -17,14 +17,21 @@ type PromptParams = {
   selectedIngredients: string[];
   cuisines: string[];
   dietaryPreferences: string[];
-  maxPrepTimeOptions: number | string;
-  difficulty: Difficulty;
+  maxPrepTime: string;
+  difficulty: string;
   allergies: string[];
+  [key: string]: any;
 };
+
+enum CheckboxNames {
+  "selectedIngredients",
+  "cuisines",
+  "dietaryPreferences",
+}
 
 type MenuOptions = {
   cuisines: string[];
   dietaryPreferences: string[];
-  maxPrepTimeOptions: number[] | null;
+  maxPrepTimeOptions: number[];
   difficulty: string[];
 };

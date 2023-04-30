@@ -33,6 +33,7 @@ export const menuOptions: MenuOptions = {
   maxPrepTimeOptions: [15, 30, 60, 120],
   difficulty: ["Easy", "Medium", "Hard"],
 };
+
 export const formatValue = (value: string) => {
   const lower = value.toLowerCase();
   const array = lower.split("");
