@@ -1,6 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+// import { PrismaClient } from "@prisma/client";
+
+// const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,16 +25,15 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        // handle auth
-        // if (!credentials.email || !credentials.password) return null
-        // const user = await someDBfn({ email: credentials.email })
-        // if (!user) return null
-        // const checkPWD = await compare(onePwd, anotherPwd)
-        // if (!checkPWD) return null
-        // returning null tells auth that incorrect credentials were entered
-        // return user
+        // const user = await prisma.user.findUnique({
+        //   where: { email: credentials.email },
+        // });
+        // if (!user) return null;
 
-        // but for now...
+        // const match = await bcrypt.compare(credentials.password, user.password);
+        // if (!match) return null;
+
+        // return user;
         const user = {
           id: "1",
           name: "Kurt",
