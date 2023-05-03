@@ -1,94 +1,16 @@
 "use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { LoginButton } from "../components/AuthButtons";
+// import { redirect } from "next/navigation";
 
-import React, { useState, useEffect } from "react";
-import { menuOptions, formatValue } from "../../config/menuOptions";
-import { handler } from "@/lib/PromptLogic";
-
-function Menu() {
-  const [formValues, setFormValues] = useState({
-    gradeLevel: "",
-    subjectArea: "",
-    unit: "",
-    numLearningObjectives: "",
-  });
-  const [response, setResponse] = useState({});
-
-  useEffect(() => {
-    Object.keys(response).length > 0 && console.log(response);
-  }, [response, setResponse]);
-
+export default async function QuickRecipe() {
+  const session = await getServerSession(authOptions);
   return (
-    <div>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          // const data = await handler(formValues);
-          // setResponse(data);
-        }}
-      >
-        <label htmlFor="gradeLevel">Choose a Grade Level:</label>
-        <select
-          name="gradeLevel"
-          id="gradeLevel"
-          value={formValues.gradeLevel}
-          onChange={(e) => {
-            setFormValues({ ...formValues, [e.target.name]: e.target.value });
-          }}
-        >
-          {/* {menuOptions["gradeLevel"].map((level, idx) => (
-            <option value={level} key={idx}>
-              {level}
-            </option>
-          ))} */}
-        </select>
-        <label htmlFor="subjectArea">Choose a Subject Area:</label>
-        <select
-          name="subjectArea"
-          id="subjectArea"
-          value={formValues.subjectArea}
-          onChange={(e) => {
-            setFormValues({ ...formValues, [e.target.name]: e.target.value });
-          }}
-        >
-          {/* {menuOptions["subjectArea"].map((subject, idx) => (
-            <option value={formatValue(subject)} key={idx}>
-              {subject}
-            </option>
-          ))} */}
-        </select>
-        <label htmlFor="numLearningObjectives">Learning Objectives:</label>
-        <select
-          name="numLearningObjectives"
-          id="numLearningObjectives"
-          value={formValues.numLearningObjectives}
-          onChange={(e) => {
-            setFormValues({ ...formValues, [e.target.name]: e.target.value });
-          }}
-        >
-          {/* {Array(menuOptions["learningObjectivesMax"])
-            .fill("")
-            .map((_max, idx) => (
-              <option value={idx + 1} key={idx}>
-                {idx + 1}
-              </option>
-            ))} */}
-        </select>
-        <label htmlFor="unit">Unit:</label>
-        <input
-          type="text"
-          name="unit"
-          id="unit"
-          placeholder="type unit here"
-          value={formValues.unit}
-          onChange={(e) => {
-            setFormValues({ ...formValues, [e.target.name]: e.target.value });
-          }}
-        ></input>
-        <input type="submit" value="Submit"></input>
-      </form>
-      {/* {response.body && <p>{response.body}</p>} */}
-    </div>
+    <h3>
+      {!session && <LoginButton />}
+      This page will run a check on a session and display a login button if no
+      session(?) but allow for a quick search given a set of basic inngredients.
+    </h3>
   );
 }
-
-export default Menu;

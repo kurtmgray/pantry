@@ -1,6 +1,8 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { getRecipe } from "@/lib/PromptLogic";
+import parseRecipeString from "@/lib/parseResponseString";
+import RecipeCard from "./RecipeCard";
 
 const optionStyles = {
   display: "flex",
@@ -24,11 +26,13 @@ const PantrySearch = ({ ingredients, options }: Props) => {
     difficulty: "",
   };
   const [searchTerm, setSearchTerm] = useState("");
+  const [newAllergy, setNewAllergy] = useState("");
   const [promptParams, setPromptParams] = useState<PromptParams>(
     initPromptParamsState
   );
-  const [newAllergy, setNewAllergy] = useState("");
-  const [recipeResponse, setRecipeResponse] = useState("");
+  const [recipeResponse, setRecipeResponse] = useState<
+    CreateCompletionResponse[]
+  >([]);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -71,17 +75,29 @@ const PantrySearch = ({ ingredients, options }: Props) => {
   };
 
   const handleGetRecipe = async () => {
-    const data = await getRecipe(promptParams);
-    console.log(data);
+    const data = await getRecipe(promptParams, 3);
+    // const body = JSON.parse(data.body.replace(/\n/g, ""));
+
+    // console.log(body);
     if (data.statusCode === 200) {
       setRecipeResponse(data.body);
     }
+
+    console.log(parseRecipeString(data.body[0].text));
+    console.log(parseRecipeString(data.body[1].text));
+    console.log(parseRecipeString(data.body[2].text));
+
     return;
   };
 
   return (
     <div>
-      <p>{recipeResponse}</p>
+      <div>
+        {recipeResponse.length > 0 &&
+          recipeResponse.map((recipe) => {
+            return <RecipeCard key={recipe.id} recipe={recipe} />;
+          })}
+      </div>
       <h2>Pantry</h2>
       <button onClick={handleGetRecipe}>Get Recipe</button>
       <h2>Selected Items:</h2>
@@ -89,16 +105,16 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         <div>
           <h3>Ingredients:</h3>
           <ul>
-            {promptParams.selectedIngredients.map((ingredient) => (
-              <li key={ingredient}>{ingredient}</li>
+            {promptParams.selectedIngredients.map((ingredient, index) => (
+              <li key={index}>{ingredient}</li>
             ))}
           </ul>
         </div>
         <div>
           <h3>Cuisines:</h3>
           <ul>
-            {promptParams.cuisines.map((cuisine) => (
-              <li key={cuisine}>{cuisine}</li>
+            {promptParams.cuisines.map((cuisine, index) => (
+              <li key={index}>{cuisine}</li>
             ))}
           </ul>
         </div>
@@ -106,8 +122,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         <div>
           <h3>Dietary Preferences:</h3>
           <ul>
-            {promptParams.dietaryPreferences.map((dietaryPreference) => (
-              <li key={dietaryPreference}>{dietaryPreference}</li>
+            {promptParams.dietaryPreferences.map((dietaryPreference, index) => (
+              <li key={index}>{dietaryPreference}</li>
             ))}
           </ul>
         </div>
@@ -115,8 +131,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         <div>
           <h3>Allergies:</h3>
           <ul>
-            {promptParams.allergies.map((allergy) => (
-              <li key={allergy}>{allergy}</li>
+            {promptParams.allergies.map((allergy, index) => (
+              <li key={index}>{allergy}</li>
             ))}
           </ul>
         </div>

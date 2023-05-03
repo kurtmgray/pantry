@@ -35,3 +35,17 @@ type MenuOptions = {
   maxPrepTimeOptions: number[];
   difficulty: string[];
 };
+
+type ParsedRecipe = {
+  id: string;
+  title: string;
+  summary: string;
+  instructions: string[];
+  preptime: string;
+  cooktime: string;
+} & Record<string, string | string[]>;
+
+type APIResponse = {
+  statusCode: number;
+  body: any;
+};

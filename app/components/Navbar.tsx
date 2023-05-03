@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav>
       <p>{JSON.stringify(session, null, 4)}</p>
       <h1>App Navbar</h1>
-      {!session ? <LoginButton /> : <LogoutButton />}
+      {!session.data ? <LoginButton /> : <LogoutButton />}
     </nav>
   );
 }

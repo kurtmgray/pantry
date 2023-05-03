@@ -5,5 +5,6 @@ export const config = {
     "/dashboard/",
     "/app/:path*", // protects app and all subdirectories
     "/pantry",
+    "/recipes",
   ],
 };
