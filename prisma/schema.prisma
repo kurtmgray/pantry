@@ -6,6 +6,109 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id              Int          @id @default(autoincrement())
+  name            String
+  email           String       @unique
+  password        String
+  pantry          PantryItem[] @relation("PantryItemsForUser")
+  recipes         Recipe[]
+  role            UserRole     @default(USER)
+  favoriteRecipes Recipe[]     @relation("UserFavoritedRecipes")
+}
+
+model PantryItem {
+  id       Int            @id @default(autoincrement())
+  name     String
+  quantity Int
+  units    IngredientUnit
+  userId   Int
+  user     User           @relation("PantryItemsForUser", fields: [userId], references: [id])
+}
+
+model Recipe {
+  id                Int            @id @default(autoincrement())
+  addedBy           User           @relation(fields: [addedById], references: [id])
+  addedById         Int
+  addedAt           DateTime       @default(now())
+  title             String
+  summary           String
+  category          RecipeCategory
+  ingredients       Ingredient[]
+  instructions      String[]
+  preptime          String         @db.VarChar(255)
+  cooktime          String         @db.VarChar(255)
+  rating            Int?
+  tags              Tag[]          @relation("RecipeTags")
+  usersWhoFavorited User[]         @relation("UserFavoritedRecipes")
+}
+
+model Ingredient {
+  id            Int            @id @default(autoincrement())
+  name          String
+  quantity      Float
+  units         IngredientUnit
+  Recipe        Recipe?        @relation(fields: [recipeId], references: [id])
+  recipeId      Int?
+  measurement   Measurement?   @relation(fields: [measurementId], references: [id])
+  measurementId Int?
+}
+
+model Tag {
+  id      Int      @id @default(autoincrement())
+  name    String
+  recipes Recipe[] @relation("RecipeTags")
+}
+
+model Measurement {
+  id            Int            @id @default(autoincrement())
+  unit          IngredientUnit
+  factorToGrams Float
+  ingredients   Ingredient[]
+}
+
+enum IngredientUnit {
+  GRAMS
+  MILLILITERS
+  TEASPOONS
+  TABLESPOONS
+  CUPS
+  PINTS
+  QUARTS
+  GALLONS
+  PACKAGE
+}
+
+enum UserRole {
+  ADMIN
+  MODERATOR
+  USER
+}
+
+enum RecipeCategory {
+  APPETIZER
+  BREAKFAST
+  LUNCH
+  DINNER
+  DESSERT
+  SNACK
+  DRINK
+}
+
+// interface MealPlan {
+//   id: string;
+//   userId: string;
+//   weekStartDate: string;
+//   weekEndDate: string;
+//   meals: Meal[];
+// }
+
+// interface Meal {
+//   dayOfWeek: string;
+//   timeOfDay: string;
+//   recipeId: string;
+// }

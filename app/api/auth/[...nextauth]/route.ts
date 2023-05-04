@@ -1,9 +1,10 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -25,23 +26,32 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        // const user = await prisma.user.findUnique({
-        //   where: { email: credentials.email },
-        // });
-        // if (!user) return null;
+        if (!credentials) return null;
 
-        // const match = await bcrypt.compare(credentials.password, user.password);
-        // if (!match) return null;
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+        if (!user) {
+          // // Create a new user if not found
+          // const newUser = await prisma.user.create({
+          //   data: {
+          //     email: credentials.email,
+          //     password: await bcrypt.hash(credentials.password, 10),
+          //   },
+          // });
+          // return newUser;
+          return null;
+        }
 
-        // return user;
-        const user = {
-          id: "1",
-          name: "Kurt",
-          email: "test@email.com",
-          randomKey: "weird",
-        };
+        const match = await bcrypt.compare(credentials.password, user.password);
+        if (!match) return null;
+
         // this return gets passed to the jwt callback below
-        return user;
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+        } as User;
       },
     }),
   ],
