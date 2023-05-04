@@ -45,7 +45,7 @@ type ParsedRecipe = {
   cooktime: string;
 } & Record<string, string | string[]>;
 
-type APIResponse = {
-  statusCode: number;
-  body: any;
+type AuthCredentials = {
+  email: string;
+  password: string;
 };
