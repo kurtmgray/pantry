@@ -6,6 +6,11 @@ import { Configuration, OpenAIApi } from "openai";
 
 // const openai = new OpenAIApi(configuration);
 // console.log(openai);
+type APIResponse = {
+  statusCode: number;
+  body?: Partial<CreateCompletionResponse>[];
+  message?: string;
+};
 
 export const getRecipe = async (
   promptParams: PromptParams,
@@ -20,11 +25,12 @@ export const getRecipe = async (
     difficulty,
   } = promptParams;
   try {
-    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend a recipe that contains ${selectedIngredients}, in as many of the following stles as possible: ${cuisines}. Be sensitive to all of the following dietary preferences: ${dietaryPreferences} and allergies: ${allergies}. Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. Please send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. Provide a response with a randomly generated ID (key:_ID), title (key:_TITLE), summary (key:_SUMMARY), instructions (key:_INSTRUCTIONS) with each step preceded by the character "@", prep time (key:_PREPTIME), and cook time (key:_COOKTIME). Strictly adhere to this response format.`;
+    const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. Recommend a recipe that contains ${selectedIngredients}, in as many of the following stles as possible: ${cuisines}. Be sensitive to all of the following dietary preferences: ${dietaryPreferences} and allergies: ${allergies}. Please only return recipes of a Michelin Star rated quality. Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. Please send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. Provide a response with a randomly generated ID (key:_ID), title (key:_TITLE), summary (key:_SUMMARY), instructions (key:_INSTRUCTIONS) with each step preceded by the character "@", prep time (key:_PREPTIME), and cook time (key:_COOKTIME).`;
     const response: CreateCompletionResponse = await generateRecipe(
       prompt,
       numChoices
     );
+    console.log(response.choices[0].text);
     return {
       statusCode: 200,
       body: response.choices,
@@ -33,7 +39,8 @@ export const getRecipe = async (
     console.log(err);
     return {
       statusCode: 500,
-      body: "Error generating recipes.",
+      body: [],
+      message: "Error generating recipe.",
     };
   }
 };
