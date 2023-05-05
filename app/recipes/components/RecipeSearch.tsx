@@ -15,7 +15,7 @@ type Props = {
   options: MenuOptions;
 };
 
-const PantrySearch = ({ ingredients, options }: Props) => {
+export default function RecipeSearch({ ingredients, options }: Props) {
   const { cuisines, dietaryPreferences } = options;
   const initPromptParamsState: PromptParams = {
     selectedIngredients: [],
@@ -52,14 +52,11 @@ const PantrySearch = ({ ingredients, options }: Props) => {
 
   const handleAddAllergies = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const { allergies } = event.currentTarget
-      .elements as typeof event.currentTarget.elements & {
-      allergies: { value: string };
-    };
+    const allergies: string = event.currentTarget.value;
 
     setPromptParams({
       ...promptParams,
-      allergies: [...promptParams.allergies, allergies.value],
+      allergies: [...promptParams.allergies, allergies],
     });
 
     setNewAllergy("");
@@ -80,12 +77,12 @@ const PantrySearch = ({ ingredients, options }: Props) => {
 
     // console.log(body);
     if (data.statusCode === 200) {
-      setRecipeResponse(data.body);
+      setRecipeResponse(data.body!);
     }
 
-    console.log(parseRecipeString(data.body[0].text));
-    console.log(parseRecipeString(data.body[1].text));
-    console.log(parseRecipeString(data.body[2].text));
+    console.log(parseRecipeString(data.body![0].text));
+    console.log(parseRecipeString(data.body![1].text));
+    console.log(parseRecipeString(data.body![2].text));
 
     return;
   };
@@ -94,8 +91,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
     <div>
       <div>
         {recipeResponse.length > 0 &&
-          recipeResponse.map((recipe) => {
-            return <RecipeCard key={recipe.id} recipe={recipe} />;
+          recipeResponse.map((recipe, index) => {
+            return <RecipeCard key={index} recipe={recipe} />;
           })}
       </div>
       <h2>Pantry</h2>
@@ -171,8 +168,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         onChange={handleSelectChange}
       >
         <option value="">Select Difficulty</option>
-        {options.difficulty.map((option) => (
-          <option key={option} value={option}>
+        {options.difficulty.map((option, index) => (
+          <option key={index} value={option}>
             {option}
           </option>
         ))}
@@ -184,8 +181,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         onChange={handleSelectChange}
       >
         <option value="">Select Max Prep Time</option>
-        {options.maxPrepTimeOptions.map((option) => (
-          <option key={option} value={option}>
+        {options.maxPrepTimeOptions.map((option, index) => (
+          <option key={index} value={option}>
             {option} min.
           </option>
         ))}
@@ -218,8 +215,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         <div>
           <h2>Cuisine</h2>
           <ul>
-            {cuisines.map((cuisine) => (
-              <li key={cuisine}>
+            {cuisines.map((cuisine, index) => (
+              <li key={index}>
                 <input
                   type="checkbox"
                   name="cuisines"
@@ -236,8 +233,8 @@ const PantrySearch = ({ ingredients, options }: Props) => {
         <div>
           <h2>Dietary Preferences</h2>
           <ul>
-            {dietaryPreferences.map((preference) => (
-              <li key={preference}>
+            {dietaryPreferences.map((preference, index) => (
+              <li key={index}>
                 <input
                   type="checkbox"
                   name="dietaryPreferences"
@@ -254,6 +251,4 @@ const PantrySearch = ({ ingredients, options }: Props) => {
       <pre>{JSON.stringify(promptParams, null, 4)}</pre>
     </div>
   );
-};
-
-export default PantrySearch;
+}
