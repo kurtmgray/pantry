@@ -1,8 +1,9 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { getRecipe } from "@/lib/PromptLogic";
+import React, { ChangeEvent, FormEvent, useState, useContext } from "react";
+import { getRecipe } from "@/lib/getRecipe";
 import parseRecipeString from "@/lib/parseResponseString";
 import RecipeCard from "./RecipeCard";
+import { AppContext } from "@/app/providers";
 
 const optionStyles = {
   display: "flex",
@@ -33,13 +34,15 @@ export default function RecipeSearch({ ingredients, options }: Props) {
   const [recipeResponse, setRecipeResponse] = useState<
     CreateCompletionResponse[]
   >([]);
+  const [globalState, setGlobalState] = useContext(AppContext);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value, checked, name } = event.target;
+    const { value, checked } = event.target;
+    const name = event.target.name as CheckboxNames;
     // if (validCheckBoxNames.includes(name)) {
     setPromptParams({
       ...promptParams,
@@ -52,11 +55,11 @@ export default function RecipeSearch({ ingredients, options }: Props) {
 
   const handleAddAllergies = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const allergies: string = event.currentTarget.value;
+    // const allergies: string = event.currentTarget.value;
 
     setPromptParams({
       ...promptParams,
-      allergies: [...promptParams.allergies, allergies],
+      allergies: [...promptParams.allergies, newAllergy],
     });
 
     setNewAllergy("");
@@ -72,10 +75,8 @@ export default function RecipeSearch({ ingredients, options }: Props) {
   };
 
   const handleGetRecipe = async () => {
-    const data = await getRecipe(promptParams, 3);
-    // const body = JSON.parse(data.body.replace(/\n/g, ""));
+    const data = await getRecipe(promptParams, 1);
 
-    // console.log(body);
     if (data.statusCode === 200) {
       setRecipeResponse(data.body!);
     }
@@ -249,6 +250,7 @@ export default function RecipeSearch({ ingredients, options }: Props) {
         </div>
       </div>
       <pre>{JSON.stringify(promptParams, null, 4)}</pre>
+      {globalState}
     </div>
   );
 }
