@@ -2,18 +2,21 @@ import NextAuth, { NextAuthOptions, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+import { compare } from "bcrypt";
 
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_OAUTH_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: "Sign in",
+      name: "Email",
       credentials: {
         email: {
           label: "Email",
@@ -32,20 +35,15 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
         if (!user) {
-          // // Create a new user if not found
-          // const newUser = await prisma.user.create({
-          //   data: {
-          //     email: credentials.email,
-          //     password: await bcrypt.hash(credentials.password, 10),
-          //   },
-          // });
-          // return newUser;
+          console.log("no user");
           return null;
         }
 
-        const match = await bcrypt.compare(credentials.password, user.password);
-        if (!match) return null;
-
+        const match = await compare(credentials.password, user.password);
+        if (!match) {
+          console.log("no match");
+          return null;
+        }
         // this return gets passed to the jwt callback below
         return {
           id: user.id.toString(),

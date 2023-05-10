@@ -2,7 +2,6 @@
 
 import { SessionProvider } from "next-auth/react";
 import { createContext, useState } from "react";
-import { Dispatch, SetStateAction } from "react";
 
 type Props = {
   children?: React.ReactNode;

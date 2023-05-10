@@ -6,9 +6,16 @@ import RecipeSearch from "./components/RecipeSearch";
 import { pantryIngredients } from "@/config/mockUserData";
 import { menuOptions } from "@/config/menuOptions";
 
+type Ingredient = {
+  id: number;
+  name: string;
+};
+type Props = {
+  ingredients: Ingredient[];
+};
 export default async function Recipes() {
   const session = await getServerSession(authOptions);
-
+  const ingredients = pantryIngredients;
   if (!session) {
     redirect("/quickrecipe");
   }
@@ -17,16 +24,11 @@ export default async function Recipes() {
     name: "cheetos",
     id: "45",
   };
-  //   route is currently protected in /middleware.ts
-  //   const session = await getServerSession(authOptions);
 
-  //   if (!session) {
-  //     redirect("/api/auth/signin");
-  //   }
   return (
     <div>
       <div>
-        <RecipeSearch ingredients={pantryIngredients} options={menuOptions} />
+        <RecipeSearch ingredients={ingredients} options={menuOptions} />
       </div>
       <Link href={`/recipes/${sampleRecipe.id}`}>
         Testing route: click for the {sampleRecipe.name} recipe.
@@ -40,3 +42,9 @@ export default async function Recipes() {
     </div>
   );
 }
+//working here
+// export const getStaticProps = async () => {
+//   const res = await fetch("http://localhost:3000/api/ingredientsList");
+//   const ingredients = await res.json();
+//   return { props: { ingredients } };
+// };
