@@ -1,7 +1,6 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState, useContext } from "react";
 import { getRecipe } from "@/lib/getRecipe";
-import parseRecipeString from "@/lib/parseResponseString";
 import RecipeCard from "./RecipeCard";
 import { AppContext } from "@/app/providers";
 
@@ -80,10 +79,6 @@ export default function RecipeSearch({ ingredients, options }: Props) {
     if (data.statusCode === 200) {
       setRecipeResponse(data.body!);
     }
-
-    console.log(parseRecipeString(data.body![0].text));
-    console.log(parseRecipeString(data.body![1].text));
-    console.log(parseRecipeString(data.body![2].text));
 
     return;
   };

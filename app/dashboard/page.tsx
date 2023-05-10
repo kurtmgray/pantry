@@ -12,8 +12,8 @@ export default async function Dashboard() {
     <div>
       <h3>This is the dashboard and the user is {session.user?.name}</h3>
       <h3>
-        Main page after logging in, displaying a summary of the user's pantry,
-        favorite recipes, and meal planner
+        Main page after logging in, displaying a summary of the user&apos;s
+        pantry, favorite recipes, and meal planner
       </h3>
     </div>
   );

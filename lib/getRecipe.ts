@@ -34,7 +34,6 @@ export const getRecipe = async (
     );
 
     // append the url in a parsed textResponse as property image. return that in body? refactor?
-    const imageResponse: CreateImageResponse = await generateImage();
     console.log(textResponse.choices[0].text);
     return {
       statusCode: 200,
@@ -50,13 +49,55 @@ export const getRecipe = async (
   }
 };
 
-async function generateImage(prompt: string): Partial<CreateImageResponse> {
+export async function generateImage(
+  prompt: string
+): Partial<CreateImageResponse> {
+  configuration.baseOptions.headers["Access-Control-Allow-Origin"] = "*";
+  console.log(configuration);
   const response = await openai.createImage({
     prompt: prompt,
     n: 1,
     size: "256x256",
   });
+  // const data = JSON.stringify({
+  //   prompt: prompt,
+  //   n: 1,
+  //   size: "256x256",
+  // });
+
+  // const options = {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${getApiKey()}`,
+  //     "Access-Control-Allow-Origin": "*",
+  //   },
+  //   body: data,
+  // };
   return response.data;
+  // new Promise((resolve, reject) => {
+  //   fetch("https://api.openai.com/v1/images/generations", options)
+  //     .then((response) => {
+  //       console.log(response);
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       if (data.data && data.data.length > 0) {
+  //         console.log(data);
+  //         resolve(data);
+  //       } else {
+  //         console.log(data);
+  //         reject("Error generating lesson plan");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       reject(error);
+  //     });
+  // });
+  // response.data;
 }
 
 async function generateRecipe(

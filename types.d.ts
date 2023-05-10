@@ -7,6 +7,7 @@ interface CreateCompletionResponseData {
 }
 
 type CreateCompletionResponse = AxiosResponse<CreateCompletionResponseData>;
+type CreateImageResponse = AxiosResponse<CreateImageResponse>;
 
 type PantryItem = {
   id: number;
@@ -44,3 +45,5 @@ type AuthCredentials = {
   email: string;
   password: string;
 };
+
+type AppContextType = [string, (value: string) => void];
