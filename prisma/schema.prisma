@@ -51,7 +51,7 @@ model Ingredient {
   id            Int            @id @default(autoincrement())
   name          String
   quantity      Float
-  units         IngredientUnit
+  units         String
   Recipe        Recipe?        @relation(fields: [recipeId], references: [id])
   recipeId      Int?
   measurement   Measurement?   @relation(fields: [measurementId], references: [id])

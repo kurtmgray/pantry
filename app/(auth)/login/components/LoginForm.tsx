@@ -3,8 +3,11 @@
 import { useState, ChangeEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Alert from "../../components/Alert";
 
 export default function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [email, setEmail] = useState("");
@@ -13,12 +16,22 @@ export default function LoginForm() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("login");
-    signIn("credentials", {
-      email,
-      password,
-      callbackUrl,
-    });
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+        callbackUrl,
+      });
+      console.log(res);
+      if (!res?.error) {
+        router.push(callbackUrl);
+      } else {
+        //res.error is "CredentialsSignin", not helpful
+        setError("Invalid email or password.");
+      }
+    } catch (err) {}
+
     // try {
     //   const res = await fetch("/api/register", {
     //     method: "POST",
@@ -73,7 +86,7 @@ export default function LoginForm() {
       <div>
         <button type="submit">Login</button>
       </div>
-      {error && <div>{error}</div>}
+      {error && <Alert error={error} />}
     </form>
   );
 }
