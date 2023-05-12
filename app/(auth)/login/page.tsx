@@ -7,7 +7,7 @@ export default function Login() {
       <h1>Login</h1>
       <LoginForm />
       <p>
-        Need to create an account? <Link href="/register">Sign in</Link>{" "}
+        Need to create an account? <Link href="/register">Register</Link>{" "}
       </p>
     </div>
   );
