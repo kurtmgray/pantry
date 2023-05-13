@@ -13,9 +13,11 @@ type Ingredient = {
 type Props = {
   ingredients: Ingredient[];
 };
+
 export default async function Recipes() {
+// {ingredients}:Props
   const session = await getServerSession(authOptions);
-  const ingredients = pantryIngredients;
+  const ingredients = pantryIngredients; // placeholder
   if (!session) {
     redirect("/quickrecipe");
   }

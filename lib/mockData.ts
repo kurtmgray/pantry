@@ -28,7 +28,7 @@ type Ingredient = {
 //   SLICES,
 //   PACKAGE,
 // }
-type Recipe = {
+export type Recipe = {
   addedBy: User;
   title: string;
   summary: string;
@@ -38,7 +38,10 @@ type Recipe = {
   preptime: string;
   cooktime: string;
   rating: number | null;
-  tags: string[];
+};
+
+type Tag = {
+  name: string;
 };
 export async function addUsersToDB(users: User[]) {
   try {
@@ -73,22 +76,11 @@ export async function addRecipesToDB(recipes: Recipe[]) {
           title: recipe.title,
           summary: recipe.summary,
           category: recipe.category,
-          ingredients: {
-            create: recipe.ingredients.map((ingredient: Ingredient) => ({
-              ...ingredient,
-              units: { connect: { name: ingredient.units } },
-            })),
-          },
+          ingredients: { set: recipe.ingredients },
           instructions: { set: recipe.instructions },
           preptime: recipe.preptime,
           cooktime: recipe.cooktime,
           rating: recipe.rating,
-          tags: {
-            connectOrCreate: recipe.tags.map((tag) => ({
-              where: { name: tag },
-              create: { name: tag },
-            })),
-          },
         },
       });
 
@@ -257,7 +249,6 @@ export const recipes = [
     preptime: "10 minutes",
     cooktime: "20 minutes",
     rating: null,
-    tags: ["Italian", "Pasta", "Bacon"],
     usersWhoFavorited: [],
   },
   {
@@ -295,7 +286,6 @@ export const recipes = [
     preptime: "15 minutes",
     cooktime: "20 minutes",
     rating: null,
-    tags: ["Asian", "Healthy", "Meal Prep"],
     usersWhoFavorited: [],
   },
   {
@@ -327,6 +317,5 @@ export const recipes = [
     preptime: "10 minutes",
     cooktime: "10 minutes",
     rating: null,
-    tags: ["Steak"],
   },
 ];

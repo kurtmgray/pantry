@@ -25,7 +25,7 @@ model PantryItem {
   id       Int            @id @default(autoincrement())
   name     String
   quantity Int
-  units    IngredientUnit
+  units    String
   userId   Int
   user     User           @relation("PantryItemsForUser", fields: [userId], references: [id])
 }
@@ -38,7 +38,7 @@ model Recipe {
   title             String
   summary           String
   category          RecipeCategory
-  ingredients       Ingredient[]
+  ingredients       Json[]
   instructions      String[]
   preptime          String         @db.VarChar(255)
   cooktime          String         @db.VarChar(255)
@@ -47,16 +47,10 @@ model Recipe {
   usersWhoFavorited User[]         @relation("UserFavoritedRecipes")
 }
 
-model Ingredient {
-  id            Int            @id @default(autoincrement())
-  name          String
-  quantity      Float
-  units         String
-  Recipe        Recipe?        @relation(fields: [recipeId], references: [id])
-  recipeId      Int?
-  measurement   Measurement?   @relation(fields: [measurementId], references: [id])
-  measurementId Int?
-}
+// }
+  // measurement   Measurement?   @relation(fields: [measurementId], references: [id])
+  // measurementId Int?
+// }
 
 model Tag {
   id      Int      @id @default(autoincrement())
@@ -64,24 +58,24 @@ model Tag {
   recipes Recipe[] @relation("RecipeTags")
 }
 
-model Measurement {
-  id            Int            @id @default(autoincrement())
-  unit          IngredientUnit
-  factorToGrams Float
-  ingredients   Ingredient[]
-}
+// model Measurement {
+//   id            Int            @id @default(autoincrement())
+//   unit          IngredientUnit
+//   factorToGrams Float
+//   ingredients   Ingredient[]
+// }
 
-enum IngredientUnit {
-  GRAMS
-  MILLILITERS
-  TEASPOONS
-  TABLESPOONS
-  CUPS
-  PINTS
-  QUARTS
-  GALLONS
-  PACKAGE
-}
+// enum IngredientUnit {
+//   GRAMS
+//   MILLILITERS
+//   TEASPOONS
+//   TABLESPOONS
+//   CUPS
+//   PINTS
+//   QUARTS
+//   GALLONS
+//   PACKAGE
+// }
 
 enum UserRole {
   ADMIN
