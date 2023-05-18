@@ -32,14 +32,14 @@ type MenuOptions = {
   difficulty: string[];
 };
 
-type ParsedRecipe = {
-  id: string;
-  title: string;
-  summary: string;
-  instructions: string[];
-  preptime: string;
-  cooktime: string;
-} & Record<string, string | string[]>;
+// type ParsedRecipe = {
+//   id: string;
+//   title: string;
+//   summary: string;
+//   instructions: string[];
+//   preptime: string;
+//   cooktime: string;
+// };
 
 type AuthCredentials = {
   email: string;
@@ -47,3 +47,28 @@ type AuthCredentials = {
 };
 
 type AppContextType = [string, (value: string) => void];
+
+type Ingredient = {
+  name: string;
+  quantity: string;
+  unit: string;
+};
+
+interface RecipeData {
+  title: string;
+  summary: string;
+  instructions: string[];
+  ingredients: Ingredient[];
+  preptime: string;
+  cooktime: string;
+}
+
+interface Recipe extends RecipeData {
+  addedById: number;
+  category: string;
+  rating: number | null;
+}
+
+interface ParsedRecipe extends RecipeData {
+  id: string;
+}
