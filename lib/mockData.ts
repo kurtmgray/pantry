@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient, RecipeCategory, UserRole } from "@prisma/client";
 const prisma = new PrismaClient();
 import { hash } from "bcrypt";
 
@@ -28,17 +28,17 @@ type Ingredient = {
 //   SLICES,
 //   PACKAGE,
 // }
-export type Recipe = {
-  addedBy: User;
-  title: string;
-  summary: string;
-  category: string;
-  ingredients: Ingredient[];
-  instructions: string[];
-  preptime: string;
-  cooktime: string;
-  rating: number | null;
-};
+// export type Recipe = {
+//   addedBy: User;
+//   title: string;
+//   summary: string;
+//   category: string;
+//   ingredients: Ingredient[];
+//   instructions: string[];
+//   preptime: string;
+//   cooktime: string;
+//   rating: number | null;
+// };
 
 type Tag = {
   name: string;
@@ -51,10 +51,10 @@ export async function addUsersToDB(users: User[]) {
         data: {
           name: user.name,
           email: user.email,
-          password: hashed, // assuming you want the password to match the username
+          password: hashed,
           pantry: { create: [] },
           recipes: { create: [] },
-          role: user.role,
+          role: user.role as UserRole,
           favoriteRecipes: { create: [] },
         },
       });
@@ -72,10 +72,10 @@ export async function addRecipesToDB(recipes: Recipe[]) {
     for (const recipe of recipes) {
       const newRecipe = await prisma.recipe.create({
         data: {
-          addedBy: { connect: { email: recipe.addedBy.email } },
+          addedBy: { connect: { id: recipe.addedById } }, // adds User, connecting by recipe.addedById
           title: recipe.title,
           summary: recipe.summary,
-          category: recipe.category,
+          category: recipe.category as RecipeCategory,
           ingredients: { set: recipe.ingredients },
           instructions: { set: recipe.instructions },
           preptime: recipe.preptime,

@@ -1,43 +1,26 @@
-"use client";
-import { useSession } from "next-auth/react";
-// import { authOptions } from "../api/auth/[...nextauth]/route";
-// import { redirect } from "next/navigation";
 import { getRecipesAddedByUser } from "@/lib/getRecipesAddedByUser";
-// import { useEffect } from "react";
-// import { Session, getServerSession } from "next-auth";
-import { useEffect, useState } from "react";
-import { Recipe } from "@/lib/mockData";
+import { getServerSession } from "next-auth";
+// import RecipeCardFromDB from "./components/RecipeCardFromDB";
+import RecipeCard from "../components/RecipeCard";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-// interface CustomSession extends Session {
-//   user?: {
-//     name?: string | null;
-//     email?: string | null;
-//     image?: string | null;
-//     id?: string;
-//   };
-//   expires: string;
-// }
+export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+  console.log("11", session?.user);
+  const email = session?.user?.email;
 
-export default function Dashboard() {
-  const [usersRecipes, setUsersRecipes] = useState<Recipe[] | []>([]);
-  const { data } = useSession();
-  const { id } = data?.user;
+  if (!email) return <div>No user, should implement redirect.</div>;
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      const recipes = await getRecipesAddedByUser(id);
-      if (recipes.length > 0) {
-        setUsersRecipes(recipes);
-      }
-    };
-    fetchRecipes();
-  }, [id]);
+  const recipes = await getRecipesAddedByUser(email);
+  console.log(recipes);
 
   return (
     <div>
-      {usersRecipes && usersRecipes.map((recipe) => <div>{recipe.title}</div>)}
-      <pre>{JSON.stringify(data?.user, null, 4)}</pre>
-      {/* <h3>This is the dashboard and the user is {session.user?.name}</h3> */}
+      <h3>This is the dashboard and the user is {session.user?.name}</h3>
+      <p>Here's a recipe title:</p>
+      {recipes &&
+        recipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+
       <h3>
         Main page after logging in, displaying a summary of the user&apos;s
         pantry, favorite recipes, and meal planner

@@ -1,19 +1,17 @@
 import { generateImage } from "@/lib/getRecipe";
-import { useState } from "react";
+// import { useState } from "react";
 
 type Props = {
   recipeImagePrompt: string;
 };
-export default function RecipeImage({ recipeImagePrompt }: Props) {
-  const [imageUrl, setImageUrl] = useState("");
+export default async function RecipeImage({ recipeImagePrompt }: Props) {
+  // const [imageUrl, setImageUrl] = useState("");
 
-  generateImage(recipeImagePrompt).then((response: CreateImageResponse) => {
-    setImageUrl(response.url);
-  });
-  console.log("imageUrl: ", imageUrl);
+  const url = await generateImage(recipeImagePrompt);
+  console.log("imageUrl: ", url);
   console.log("prompt: ", recipeImagePrompt);
 
-  if (!imageUrl) return null;
+  if (!url) return null;
 
-  return <img src={imageUrl} alt="AI recipe image" />;
+  return <img src={url} alt="AI recipe image" />;
 }

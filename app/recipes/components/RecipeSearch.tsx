@@ -1,8 +1,9 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState, useContext } from "react";
 import { getRecipe } from "@/lib/getRecipe";
-import RecipeCard from "./RecipeCard";
 import { AppContext } from "@/app/providers";
+import RecipeCard from "@/app/components/RecipeCard";
+import parseRecipeString from "@/lib/parseResponseString";
 
 const optionStyles = {
   display: "flex",
@@ -87,8 +88,9 @@ export default function RecipeSearch({ ingredients, options }: Props) {
     <div>
       <div>
         {recipeResponse.length > 0 &&
-          recipeResponse.map((recipe, index) => {
-            return <RecipeCard key={index} recipe={recipe} />;
+          recipeResponse.map((recipe) => {
+            const parsed = parseRecipeString(recipe.text);
+            return <RecipeCard key={parsed.id} recipe={parsed} />;
           })}
       </div>
       <h2>Pantry</h2>
