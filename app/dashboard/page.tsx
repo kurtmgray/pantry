@@ -1,25 +1,51 @@
-import { getRecipesAddedByUser } from "@/lib/getRecipesAddedByUser";
-import { getServerSession } from "next-auth";
-// import RecipeCardFromDB from "./components/RecipeCardFromDB";
+"use client";
 import RecipeCard from "../components/RecipeCard";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
-export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-  console.log("11", session?.user);
+export default function Dashboard() {
+  const [userRecipes, setUserRecipes] = useState<ParsedRecipe[]>([]);
+  const { data: session, status } = useSession();
   const email = session?.user?.email;
+
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+
+    const getRecipes = async (e: string) => {
+      const response = await fetch(`api/recipes?email=${e}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(response);
+      if (response.ok) {
+        const recipes: ParsedRecipe[] = await response.json();
+        setUserRecipes(recipes);
+      }
+    };
+    if (email) {
+      getRecipes(email);
+    }
+  }, [email, status]);
 
   if (!email) return <div>No user, should implement redirect.</div>;
 
-  const recipes = await getRecipesAddedByUser(email);
-  console.log(recipes);
-
   return (
     <div>
-      <h3>This is the dashboard and the user is {session.user?.name}</h3>
+      <h3>
+        {status === "loading"
+          ? "loading..."
+          : `This is the dashboard and the user is ${session?.user?.name}`}
+      </h3>
       <p>Here's a recipe title:</p>
-      {recipes &&
-        recipes.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}
+      {userRecipes.length > 0 &&
+        userRecipes.map((recipe) => (
+          <RecipeCard key={recipe.id} recipe={recipe} />
+        ))}
 
       <h3>
         Main page after logging in, displaying a summary of the user&apos;s
@@ -28,3 +54,4 @@ export default async function Dashboard() {
     </div>
   );
 }
+//

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { RecipeCategory } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   // im here
@@ -29,9 +30,40 @@ export async function POST(request: Request) {
     };
   } catch (error) {
     console.error(error);
+    return {
+      status: 500,
+      body: "internal server error",
+    };
+  } finally {
+    async () => {
+      console.log("finally");
+      await prisma.$disconnect();
+    };
   }
-  return {
-    status: 500,
-    body: "internal server error",
-  };
+}
+
+export async function GET(request: NextRequest) {
+  const email = request.nextUrl.searchParams.get("email");
+  if (typeof email === "string") {
+    try {
+      const recipes = await prisma.recipe.findMany({
+        where: {
+          addedBy: { email: email },
+        },
+      });
+      console.log(recipes);
+      return NextResponse.json(recipes);
+    } catch (error) {
+      console.error(error);
+      return {
+        status: 500,
+        body: "internal server error",
+      };
+    } finally {
+      await (async () => {
+        console.log("finally");
+        await prisma.$disconnect();
+      })();
+    }
+  }
 }
