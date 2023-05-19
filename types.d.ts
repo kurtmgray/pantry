@@ -55,17 +55,18 @@ type Ingredient = {
 };
 
 interface RecipeData {
+  // id: string; // resolve w/ ParsedRecipe
   title: string;
   summary: string;
   instructions: string[];
   ingredients: Ingredient[];
   preptime: string;
   cooktime: string;
+  category: string;
 }
 
 interface Recipe extends RecipeData {
   addedById: number;
-  category: string;
   rating: number | null;
 }
 

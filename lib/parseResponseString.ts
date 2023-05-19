@@ -7,17 +7,20 @@ const getInstructions = (lines: string[]): string[] => {
 };
 
 const getIngredients = (lines: string[]): Ingredient[] => {
-  const ingredients = [];
+  const ingredients: Ingredient[] = [];
   for (const line of lines) {
-    if (line.startsWith("_INGREDIENTS")) {
-      const ingredient = {};
-
-      // figure out how you want the response to look, then parse into object
+    if (line.startsWith("%")) {
+      const name = getValue(line.split(", "), "name");
+      const quantity = getValue(line.split(", "), "quantity");
+      const unit = getValue(line.split(", "), "unit");
+      ingredients.push({ name, quantity, unit });
     }
   }
+  console.log("ingredients", ingredients);
+  return ingredients;
 };
 const getValue = (lines: string[], key: string): string => {
-  const targetLine = lines.find((line) => line.startsWith(key));
+  const targetLine = lines.find((line) => line.includes(key));
   return targetLine ? targetLine.split(": ")[1] : "";
 };
 export default function parseRecipeString(recipeString: string): ParsedRecipe {
@@ -31,6 +34,7 @@ export default function parseRecipeString(recipeString: string): ParsedRecipe {
     instructions: getInstructions(lines),
     preptime: getValue(lines, "_PREPTIME"),
     cooktime: getValue(lines, "_COOKTIME"),
+    category: getValue(lines, "_CATEGORY"),
   };
   return recipe;
 }
