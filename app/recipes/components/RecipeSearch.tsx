@@ -87,9 +87,11 @@ export default function RecipeSearch({ ingredients, options }: Props) {
   return (
     <div>
       <div>
+        <pre>{JSON.stringify(recipeResponse, null, 4)}</pre>
         {recipeResponse.length > 0 &&
           recipeResponse.map((recipe) => {
             const parsed = parseRecipeString(recipe.text);
+            console.log("parsed", parsed);
             return <RecipeCard key={parsed.id} recipe={parsed} />;
           })}
       </div>
