@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { MouseEvent } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 type Props = {
   recipe: Recipe | ParsedRecipe;
@@ -10,6 +11,10 @@ type Props = {
 
 export default function RecipeCard({ recipe }: Props) {
   const [savingRecipe, setSavingRecipe] = useState(false);
+  const { data: session, status } = useSession();
+  const userEmail = session?.user?.email;
+  console.log(session);
+
   // getserversession is killing the build... ???
   //   const session = getServerSession(authOptions);
   //   console.log(session);
@@ -24,7 +29,7 @@ export default function RecipeCard({ recipe }: Props) {
     setSavingRecipe(true);
 
     try {
-      const response = await fetch("/api/recipes", {
+      const response = await fetch(`/api/recipes?email=${userEmail}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

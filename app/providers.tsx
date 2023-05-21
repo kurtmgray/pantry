@@ -11,21 +11,25 @@ export const AppSessionProvider = ({ children }: Props) => {
   return <SessionProvider>{children}</SessionProvider>;
 };
 
-//create context
-export const AppContext = createContext<[string, (state: string) => void]>([
-  "default state",
-  () => {},
-]);
+type GlobalState = {
+  recipes: Recipe[] | ParsedRecipe[] | [];
+  pantry: PantryItem[] | [];
+};
 
-//add state, wrapping children
+const InitialState: GlobalState = {
+  recipes: [],
+  pantry: [],
+};
+
+export const AppContext = createContext<
+  [GlobalState, (state: GlobalState) => void]
+>([InitialState, () => {}]);
+
 export const AppContextProvider: React.FC<Props> = ({ children }: Props) => {
-  const [globalState, setGlobalState] = useState("Hi, I am global state.");
-
+  const [globalState, setGlobalState] = useState<GlobalState>(InitialState);
   return (
     <AppContext.Provider value={[globalState, setGlobalState]}>
       {children}
     </AppContext.Provider>
   );
 };
-
-// use at root level

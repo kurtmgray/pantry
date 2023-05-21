@@ -1,10 +1,14 @@
 "use client";
-import RecipeCard from "../components/RecipeCard";
-import { useState, useEffect } from "react";
+// import RecipeCard from "../components/RecipeCard";
+import RecipeSummary from "./components/RecipeSummary";
+import { useState, useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { AppContext } from "../providers";
 
 export default function Dashboard() {
-  const [userRecipes, setUserRecipes] = useState<ParsedRecipe[]>([]);
+  // const [userRecipes, setUserRecipes] = useState<ParsedRecipe[]>([]);
+  const [globalState, setGlobalState] = useContext(AppContext);
   const { data: session, status } = useSession();
   const email = session?.user?.email;
 
@@ -14,7 +18,7 @@ export default function Dashboard() {
     }
 
     const getRecipes = async (e: string) => {
-      const response = await fetch(`api/recipes?email=${e}`, {
+      const response = await fetch(`/api/recipes?email=${e}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +28,10 @@ export default function Dashboard() {
       console.log(response);
       if (response.ok) {
         const recipes: ParsedRecipe[] = await response.json();
-        setUserRecipes(recipes);
+        setGlobalState({
+          ...globalState,
+          recipes: recipes,
+        });
       }
     };
     if (email) {
@@ -42,9 +49,12 @@ export default function Dashboard() {
           : `This is the dashboard and the user is ${session?.user?.name}`}
       </h3>
       <p>Here's a recipe title:</p>
-      {userRecipes.length > 0 &&
-        userRecipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+      {globalState.recipes.length > 0 &&
+        globalState.recipes.map((recipe) => (
+          <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
+            <RecipeSummary key={recipe.id} recipe={recipe} />
+            {/* <RecipeCard key={recipe.id} recipe={recipe} /> */}
+          </Link>
         ))}
 
       <h3>
