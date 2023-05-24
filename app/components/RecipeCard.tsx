@@ -4,32 +4,33 @@ import { MouseEvent } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { CustomSession } from "@/lib/types";
 
 type Props = {
-  recipe: Recipe | ParsedRecipe;
+  recipe: RecipeDB | RecipeGPT;
 };
 
 export default function RecipeCard({ recipe }: Props) {
   const [savingRecipe, setSavingRecipe] = useState(false);
-  const { data: session, status } = useSession();
-  const userEmail = session?.user?.email;
-  console.log(session);
+  const session = useSession();
+  const { user } = session.data as CustomSession;
 
-  // getserversession is killing the build... ???
-  //   const session = getServerSession(authOptions);
-  //   console.log(session);
-  const isParsedRecipe = "id" in recipe;
-  const recipeData = isParsedRecipe
-    ? (recipe as ParsedRecipe)
-    : (recipe as Recipe);
+  const isDBRecipe = "addedById" in recipe;
+  let recipeData = isDBRecipe ? (recipe as RecipeDB) : (recipe as RecipeGPT);
 
   const handleSaveRecipe = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log("clicked");
     setSavingRecipe(true);
 
+    if (!isDBRecipe) {
+      recipeData = {
+        ...recipeData,
+        addedById: parseInt(user.id),
+      };
+    }
+
     try {
-      const response = await fetch(`/api/recipes?email=${userEmail}`, {
+      const response = await fetch(`/api/recipes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

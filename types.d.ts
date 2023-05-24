@@ -55,7 +55,6 @@ type Ingredient = {
 };
 
 interface RecipeData {
-  // id: string; // resolve w/ ParsedRecipe
   title: string;
   summary: string;
   instructions: string[];
@@ -65,11 +64,13 @@ interface RecipeData {
   category: string;
 }
 
-interface Recipe extends RecipeData {
+interface RecipeDB extends RecipeData {
+  id: number;
   addedById: number;
+  addedAt: string;
   rating: number | null;
 }
 
-interface ParsedRecipe extends RecipeData {
+interface RecipeGPT extends RecipeData {
   id: string;
 }

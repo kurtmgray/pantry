@@ -12,7 +12,7 @@ export const AppSessionProvider = ({ children }: Props) => {
 };
 
 type GlobalState = {
-  recipes: Recipe[] | ParsedRecipe[] | [];
+  recipes: RecipeDB[];
   pantry: PantryItem[] | [];
 };
 

@@ -247,8 +247,8 @@ export default function RecipeSearch({ ingredients, options }: Props) {
           </ul>
         </div>
       </div>
-      <pre>{JSON.stringify(promptParams, null, 4)}</pre>
-      {globalState}
+      <pre>{JSON.stringify(recipeResponse, null, 4)}</pre>
+      {/* {globalState} */}
     </div>
   );
 }
