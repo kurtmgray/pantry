@@ -7,18 +7,18 @@ import Link from "next/link";
 import { AppContext } from "../providers";
 
 export default function Dashboard() {
-  // const [userRecipes, setUserRecipes] = useState<ParsedRecipe[]>([]);
   const [globalState, setGlobalState] = useContext(AppContext);
   const { data: session, status } = useSession();
-  const email = session?.user?.email;
 
   useEffect(() => {
+    const email = session?.user?.email;
+
     if (status === "loading") {
       return;
     }
 
-    const getRecipes = async (e: string) => {
-      const response = await fetch(`/api/recipes?email=${e}`, {
+    const getRecipes = async () => {
+      const response = await fetch(`/api/recipes?email=${email}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export default function Dashboard() {
 
       console.log(response);
       if (response.ok) {
-        const recipes: ParsedRecipe[] = await response.json();
+        const recipes: RecipeDB[] = await response.json();
         setGlobalState({
           ...globalState,
           recipes: recipes,
@@ -35,11 +35,9 @@ export default function Dashboard() {
       }
     };
     if (email) {
-      getRecipes(email);
+      getRecipes();
     }
-  }, [email, status]);
-
-  if (!email) return <div>No user, should implement redirect.</div>;
+  }, [status]);
 
   return (
     <div>

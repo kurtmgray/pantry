@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default async function Recipes() {
-// {ingredients}:Props
+  // {ingredients}:Props
   const session = await getServerSession(authOptions);
   const ingredients = pantryIngredients; // placeholder
   if (!session) {

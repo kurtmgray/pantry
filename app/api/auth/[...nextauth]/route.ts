@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id.toString(),
           name: user.name,
           email: user.email,
-        } as User;
+        };
       },
     }),
   ],
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     session: ({ session, token }) => {
-      //   console.log("Session Callback", { token, session });
+      // console.log("Session Callback", { token, session });
       return {
         ...session,
         user: {
@@ -68,10 +68,10 @@ export const authOptions: NextAuthOptions = {
       };
     },
     jwt: ({ token, user }) => {
-      //   console.log("JWT Callback", { token, user });
+      // console.log("JWT Callback", { token, user });
       if (user) {
-        const u = user as any;
-        return { ...token, id: u.id, key: u.randomKey };
+        const u = user as User;
+        return { ...token, id: u.id };
       }
       return token;
     },
