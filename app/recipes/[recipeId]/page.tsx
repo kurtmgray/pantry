@@ -20,25 +20,25 @@ export default async function RecipePage({ params: { recipeId } }: Props) {
   //   getRecipes();
   // }, [recipe]);
 
+  //working here
   const [globalState, setGlobalState] = useContext(AppContext);
-  // const [recipe, setRecipe] = useState<RecipeDB | undefined>();
-  // useEffect(() => {
-  const findRecipeById = () => {
-    if (globalState.recipes.length > 0) {
-      const thisRecipe = globalState.recipes.find(
-        (recipe) => recipe.id === parseInt(recipeId)
-      );
-      console.log(thisRecipe);
-      console.log("triggered");
-      return thisRecipe;
-      // if (thisRecipe) {
-      //   console.log("hello");
-      //   setRecipe(thisRecipe);
-      // }
-    }
-  };
-  const recipe = findRecipeById();
-  // }, [recipeId, globalState.recipes]);
+  const [recipe, setRecipe] = useState<RecipeDB | undefined>();
+  useEffect(() => {
+    const findRecipeById = () => {
+      if (globalState.recipes.length > 0) {
+        const thisRecipe = globalState.recipes.find(
+          (recipe) => recipe.id === parseInt(recipeId)
+        );
+        console.log(thisRecipe);
+        console.log("triggered");
+        if (thisRecipe) {
+          console.log("hello");
+          setRecipe(thisRecipe);
+        }
+      }
+    };
+    findRecipeById();
+  }, [recipeId, globalState.recipes]);
 
   useEffect(() => {
     console.log(recipe);
