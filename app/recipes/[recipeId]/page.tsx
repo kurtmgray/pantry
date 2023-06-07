@@ -21,15 +21,29 @@ export default async function RecipePage({ params: { recipeId } }: Props) {
   // }, [recipe]);
 
   const [globalState, setGlobalState] = useContext(AppContext);
-  const [recipe, setRecipe] = useState();
-  useEffect(() => {
+  // const [recipe, setRecipe] = useState<RecipeDB | undefined>();
+  // useEffect(() => {
+  const findRecipeById = () => {
     if (globalState.recipes.length > 0) {
       const thisRecipe = globalState.recipes.find(
-        (recipe: ParsedRecipe) => recipe.id === recipeId
+        (recipe) => recipe.id === parseInt(recipeId)
       );
-      if (thisRecipe) setRecipe(thisRecipe);
+      console.log(thisRecipe);
+      console.log("triggered");
+      return thisRecipe;
+      // if (thisRecipe) {
+      //   console.log("hello");
+      //   setRecipe(thisRecipe);
+      // }
     }
-  }, []);
+  };
+  const recipe = findRecipeById();
+  // }, [recipeId, globalState.recipes]);
+
+  useEffect(() => {
+    console.log(recipe);
+  }, [recipe]);
+
   return (
     <div>
       <h3>This is the page id: {recipeId}</h3>
@@ -38,9 +52,8 @@ export default async function RecipePage({ params: { recipeId } }: Props) {
         a list of ingredients and their amounts, detailed instructions, and
         nutritional information
       </h3>
-
-      <pre>sdfsdf{JSON.stringify(recipe)}</pre>
-      {/* // {recipe && <RecipeCard key={recipe?.id} recipe={recipe} />} */}
+      {recipe && <pre>{JSON.stringify(recipe)}</pre>}
+      {/* {recipe && <RecipeCard key={recipe?.id} recipe={recipe} />} */}
     </div>
   );
 }
