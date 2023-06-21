@@ -34,7 +34,7 @@ export const getRecipe = async (
     Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. 
     Please send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. 
     Provide a response with a randomly generated ID (key:_ID), title (key:_TITLE), summary (key:_SUMMARY), ingredients (key: _INGREDIENTS) each ingredient preceded by the character "%" in this format: name: ingredient name, quantity: number string only, unit: unit of measure, instructions (key:_INSTRUCTIONS) with each step preceded by the character "@" including any prep on ingredients listed, prep time (key:_PREPTIME), cook time (key:_COOKTIME).
-    Choose a recipe category (key:_CATEGORY) from the following: APPETIZER, BREAKFAST, LUNCH, DINNER, DESSERT, SNACK, DRINK`;
+    Choose a recipe category (key:_CATEGORY) from the following: SIDE, APPETIZER, BREAKFAST, LUNCH, DINNER, DESSERT, SNACK, DRINK`;
     // probably make category a user option
     const textResponse: CreateCompletionResponse = await generateRecipe(
       prompt,

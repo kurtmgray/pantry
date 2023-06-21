@@ -8,41 +8,24 @@ type Props = {
     recipeId: string;
   };
 };
-export default async function RecipePage({ params: { recipeId } }: Props) {
-  // const [recipe, setRecipe] = useState<ParsedRecipe>();
-  // useEffect(() => {
-  //   const getRecipes = async () => {
-  //     const recipeData = await fetch(`/api/recipes/${recipeId}`);
-  //     console.log(JSON.stringify(recipeData));
-  //     const data = await recipeData.json();
-  //     if (recipeData) setRecipe(data);
-  //   };
-  //   getRecipes();
-  // }, [recipe]);
-
-  //working here
+export default function RecipePage({ params: { recipeId } }: Props) {
   const [globalState, setGlobalState] = useContext(AppContext);
-  const [recipe, setRecipe] = useState<RecipeDB | undefined>();
+  const [recipe, setRecipe] = useState<RecipeDB | undefined>(undefined);
+
   useEffect(() => {
-    const findRecipeById = () => {
+    const findRecipeById = (id: string) => {
       if (globalState.recipes.length > 0) {
         const thisRecipe = globalState.recipes.find(
-          (recipe) => recipe.id === parseInt(recipeId)
+          (r) => r.id === parseInt(id)
         );
-        console.log(thisRecipe);
-        console.log("triggered");
         if (thisRecipe) {
-          console.log("hello");
           setRecipe(thisRecipe);
         }
       }
     };
-    findRecipeById();
-  }, [recipeId, globalState.recipes]);
 
-  useEffect(() => {
-    console.log(recipe);
-  }, [recipe]);
+    findRecipeById(recipeId);
+  }, [recipeId, globalState.recipes]);
 
   return (
     <div>
@@ -52,8 +35,7 @@ export default async function RecipePage({ params: { recipeId } }: Props) {
         a list of ingredients and their amounts, detailed instructions, and
         nutritional information
       </h3>
-      {recipe && <pre>{JSON.stringify(recipe)}</pre>}
-      {/* {recipe && <RecipeCard key={recipe?.id} recipe={recipe} />} */}
+      {recipe && <RecipeCard key={recipe?.id} recipe={recipe} />}
     </div>
   );
 }

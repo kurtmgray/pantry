@@ -91,6 +91,7 @@ enum RecipeCategory {
   DESSERT
   SNACK
   DRINK
+  SIDE
 }
 
 // interface MealPlan {

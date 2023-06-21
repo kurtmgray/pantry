@@ -1,7 +1,7 @@
 "use client";
-import { getServerSession } from "next-auth";
-import { MouseEvent } from "react";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+// import { getServerSession } from "next-auth";
+import { MouseEvent, useEffect } from "react";
+// import { authOptions } from "../api/auth/[...nextauth]/route";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "@/lib/types";
@@ -10,17 +10,31 @@ type Props = {
   recipe: RecipeDB | RecipeGPT;
 };
 
+enum Status {
+  NOT_SAVED,
+  SAVING,
+  SAVED,
+}
+
 export default function RecipeCard({ recipe }: Props) {
-  const [savingRecipe, setSavingRecipe] = useState(false);
+  const [recipeStatus, setRecipeStatus] = useState<Status | null>(null);
   const session = useSession();
   const { user } = session.data as CustomSession;
 
   const isDBRecipe = "addedById" in recipe;
-  let recipeData = isDBRecipe ? (recipe as RecipeDB) : (recipe as RecipeGPT);
+  let recipeData: RecipeDB | RecipeGPT;
+
+  useEffect(() => {
+    isDBRecipe ? setRecipeStatus(null) : setRecipeStatus(Status.NOT_SAVED);
+  }, [recipe]);
+
+  isDBRecipe
+    ? (recipeData = recipe as RecipeDB)
+    : (recipeData = recipe as RecipeGPT);
 
   const handleSaveRecipe = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setSavingRecipe(true);
+    setRecipeStatus(Status.SAVING);
 
     if (!isDBRecipe) {
       recipeData = {
@@ -38,8 +52,8 @@ export default function RecipeCard({ recipe }: Props) {
         body: JSON.stringify(recipeData),
       });
 
+      console.log(response);
       if (response.ok) {
-        console.log(response);
         const data = await response.json();
         console.log(data);
         // logic or feedback after success
@@ -52,7 +66,7 @@ export default function RecipeCard({ recipe }: Props) {
       // additional error handling
     }
 
-    setSavingRecipe(false);
+    setRecipeStatus(Status.SAVED);
   };
 
   return (
@@ -84,7 +98,11 @@ export default function RecipeCard({ recipe }: Props) {
           <li key={index}>{step}</li>
         ))}
       </ul>
-      <button onClick={(e) => handleSaveRecipe(e)}>Save Recipe</button>
+      {recipeStatus === Status.NOT_SAVED && (
+        <button onClick={(e) => handleSaveRecipe(e)}>Save Recipe</button>
+      )}
+      {recipeStatus === Status.SAVING && <p>Saving Recipe...</p>}
+      {recipeStatus === Status.SAVED && <p>Recipe Saved!</p>}
     </div>
   );
 }
