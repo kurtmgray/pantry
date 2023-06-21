@@ -67,29 +67,29 @@ export async function addUsersToDB(users: User[]) {
   }
 }
 
-export async function addRecipesToDB(recipes: Recipe[]) {
-  try {
-    for (const recipe of recipes) {
-      const newRecipe = await prisma.recipe.create({
-        data: {
-          addedBy: { connect: { id: recipe.addedById } }, // adds User, connecting by recipe.addedById
-          title: recipe.title,
-          summary: recipe.summary,
-          category: recipe.category as RecipeCategory,
-          ingredients: { set: recipe.ingredients },
-          instructions: { set: recipe.instructions },
-          preptime: recipe.preptime,
-          cooktime: recipe.cooktime,
-          rating: recipe.rating,
-        },
-      });
+// export async function addRecipesToDB(recipes: Recipe[]) {
+//   try {
+//     for (const recipe of recipes) {
+//       const newRecipe = await prisma.recipe.create({
+//         data: {
+//           addedBy: { connect: { id: recipe.addedById } }, // adds User, connecting by recipe.addedById
+//           title: recipe.title,
+//           summary: recipe.summary,
+//           category: recipe.category as RecipeCategory,
+//           ingredients: { set: recipe.ingredients },
+//           instructions: { set: recipe.instructions },
+//           preptime: recipe.preptime,
+//           cooktime: recipe.cooktime,
+//           rating: recipe.rating,
+//         },
+//       });
 
-      console.log(`Created recipe with ID: ${newRecipe.id}`);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
+//       console.log(`Created recipe with ID: ${newRecipe.id}`);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 export const users = [
   {
