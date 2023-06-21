@@ -1,6 +1,6 @@
 import React from "react";
 type Props = {
-  recipe: Recipe | ParsedRecipe;
+  recipe: RecipeDB | RecipeGPT;
 };
 export default function RecipeSummary({ recipe }: Props) {
   return (
