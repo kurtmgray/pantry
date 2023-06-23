@@ -1,7 +1,8 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, MouseEvent, ChangeEvent, FormEvent, useEffect } from "react";
 import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
 import { categories } from "@/lib/getIngredientsByCategory";
+import IngredientCard from "./IngredientCard";
 
 export default function AddIngredientForm() {
   const [ingredient, setIngredient] = useState({
@@ -11,6 +12,13 @@ export default function AddIngredientForm() {
     unit: "",
   });
   const [ingredients, setIngredients] = useState<string[]>([]);
+  const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
+    EdamamIngredient[]
+  >([]);
+
+  useEffect(() => {
+    console.log(ingredient);
+  }, [ingredient]);
 
   const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedCategory = e.target.value;
@@ -48,6 +56,19 @@ export default function AddIngredientForm() {
     e.preventDefault();
     // TODO: Handle saving the ingredient to the database
     console.log("Saving ingredient:", ingredient);
+    const getIngredientToAdd = async (ingredientName: string) => {
+      const response = await fetch(`/api/ingredients/?ingr=${ingredientName}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.parsed);
+        setIngredientsFromEdamam(data.parsed);
+      }
+    };
+    getIngredientToAdd(ingredient.name);
     // Reset the form
     setIngredient({
       category: "",
@@ -57,7 +78,20 @@ export default function AddIngredientForm() {
     });
   };
 
-  const hasEmptyValues = Object.values(ingredients).some(
+  const handleCreatePantryItem = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const response = await fetch(`/api/ingredients`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ingredientsFromEdamam),
+    });
+    console.log(response);
+    setIngredientsFromEdamam([]);
+  };
+
+  const hasEmptyValues = Object.values(ingredient).some(
     (value) => value === ""
   );
 
@@ -131,9 +165,18 @@ export default function AddIngredientForm() {
           </div>
         </>
       )}
-      <button type="submit" disabled={!hasEmptyValues}>
-        Add Ingredient
+      <button type="submit" disabled={hasEmptyValues}>
+        Find Ingredient
       </button>
+
+      {ingredientsFromEdamam &&
+        ingredientsFromEdamam.map((ingredient, idx) => (
+          <IngredientCard
+            key={idx}
+            ingredient={ingredient}
+            onCreatePantryItem={handleCreatePantryItem}
+          />
+        ))}
     </form>
   );
 }

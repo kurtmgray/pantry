@@ -23,11 +23,11 @@ export default function Navbar() {
           <div>loading session...</div>
         ) : (
           <>
-            <p>User ID: {JSON.stringify(sessionData.user?.id, null, 4)}</p>
-            {session && <Links />}
+            <p>User ID: {JSON.stringify(sessionData?.user?.id, null, 4)}</p>
+            {session.data && <Links />}
           </>
         )}
-        {!session ? <LoginButton /> : <LogoutButton />}
+        {!session.data ? <LoginButton /> : <LogoutButton />}
       </nav>
     </>
   );

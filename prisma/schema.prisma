@@ -22,13 +22,27 @@ model User {
 }
 
 model PantryItem {
-  id       Int            @id @default(autoincrement())
-  name     String
-  quantity Int
-  units    String
-  userId   Int
-  user     User           @relation("PantryItemsForUser", fields: [userId], references: [id])
+  id         Int    @id @default(autoincrement())
+  label      String
+  userId     Int
+  user       User   @relation("PantryItemsForUser", fields: [userId], references: [id])
+  knownAs    String
+  category   String
+  categoryLabel String
+  image      String
+  nutrients  Nutrient[]
 }
+
+model Nutrient {
+  id          Int      @id @default(autoincrement())
+  enerc_kcal  Float
+  procnt      Float
+  fat         Float
+  chocdf      Float
+  pantryItemId Int
+  pantryItem  PantryItem @relation(fields: [pantryItemId], references: [id])
+}
+
 
 model Recipe {
   id                Int            @id @default(autoincrement())
