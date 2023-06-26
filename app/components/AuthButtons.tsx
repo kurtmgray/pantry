@@ -3,11 +3,20 @@
 import { signIn, signOut } from "next-auth/react";
 
 export const LoginButton = () => {
-  return <button onClick={() => signIn()}>Sign in</button>;
+  return (
+    <button className="navbar__button" onClick={() => signIn()}>
+      Sign in
+    </button>
+  );
 };
 
 export const LogoutButton = () => {
   return (
-    <button onClick={() => signOut({ callbackUrl: "/" })}>Sign Out</button>
+    <button
+      className="navbar__button"
+      onClick={() => signOut({ callbackUrl: "/" })}
+    >
+      Sign Out
+    </button>
   );
 };

@@ -9,26 +9,14 @@ export default function Navbar() {
   const session = useSession();
   const sessionData = session.data as CustomSession;
   return (
-    <>
-      <nav
-        className="navbar"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1>App Navbar</h1>
-        {session?.status === "loading" ? (
-          <div>loading session...</div>
-        ) : (
-          <>
-            <p>User ID: {JSON.stringify(sessionData?.user?.id, null, 4)}</p>
-            {session.data && <Links />}
-          </>
-        )}
-        {!session.data ? <LoginButton /> : <LogoutButton />}
-      </nav>
-    </>
+    <nav className="navbar">
+      <h1 className="navbar__title">Pantry</h1>
+      {session?.status === "loading" ? (
+        <div>loading session...</div>
+      ) : (
+        <>{sessionData && <Links />}</>
+      )}
+      {!session.data ? <LoginButton /> : <LogoutButton />}
+    </nav>
   );
 }

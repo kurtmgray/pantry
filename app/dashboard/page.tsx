@@ -1,13 +1,13 @@
 "use client";
-// import RecipeCard from "../components/RecipeCard";
-import RecipeSummary from "./components/RecipeSummary";
-import { useState, useEffect, useContext } from "react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import DashRecipeCard from "./components/DashRecipeCard";
+import { useEffect, useContext } from "react";
 import { AppContext } from "../providers";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [globalState, setGlobalState] = useContext(AppContext);
+
+  // choose how to get session
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -40,25 +40,11 @@ export default function Dashboard() {
   }, [status]);
 
   return (
-    <div>
-      <h3>
-        {status === "loading"
-          ? "loading..."
-          : `This is the dashboard and the user is ${session?.user?.name}`}
-      </h3>
-      <p>Here's a recipe title:</p>
+    <div className="dashboard">
       {globalState.recipes.length > 0 &&
         globalState.recipes.map((recipe) => (
-          <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
-            <RecipeSummary key={recipe.id} recipe={recipe} />
-            {/* <RecipeCard key={recipe.id} recipe={recipe} /> */}
-          </Link>
+          <DashRecipeCard key={recipe.id} recipe={recipe} />
         ))}
-
-      <h3>
-        Main page after logging in, displaying a summary of the user&apos;s
-        pantry, favorite recipes, and meal planner
-      </h3>
     </div>
   );
 }

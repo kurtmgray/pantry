@@ -70,14 +70,14 @@ export default function RecipeCard({ recipe }: Props) {
   };
 
   return (
-    <div>
+    <div className="recipe">
       {/* <RecipeImage recipeImagePrompt={recipeData.summary} /> */}
-      <h2>{recipeData.title}</h2>
-      <h3>{recipeData.summary}</h3>
-      <p>Prep Time: {recipeData.preptime}</p>
-      <p>Cook Time: {recipeData.cooktime}</p>
-      <p>Ingredients:</p>
-      <ul>
+      <h2 className="recipe__title">{recipeData.title}</h2>
+      <h3 className="recipe__description">{recipeData.summary}</h3>
+      <p className="recipe__time">Prep Time: {recipeData.preptime}</p>
+      <p className="recipe__time">Cook Time: {recipeData.cooktime}</p>
+      <p className="recipe__ingredients-heading">Ingredients:</p>
+      <ul className="recipe__ingredients">
         {recipeData.ingredients.map(({ name, quantity, unit }, index) => {
           if (quantity === "to taste")
             return (
@@ -92,8 +92,8 @@ export default function RecipeCard({ recipe }: Props) {
           );
         })}
       </ul>
-      <p>Instructions:</p>
-      <ul>
+      <p className="recipe__instructions-heading">Instructions:</p>
+      <ul className="recipe__instructions">
         {recipeData.instructions.map((step, index) => (
           <li key={index}>{step}</li>
         ))}

@@ -28,7 +28,7 @@ export default function RecipePage({ params: { recipeId } }: Props) {
   }, [recipeId, globalState.recipes]);
 
   return (
-    <div>
+    <div className="recipe__card">
       <h3>This is the page id: {recipeId}</h3>
       <h3>
         Page displaying detailed information about a specific recipe, including
