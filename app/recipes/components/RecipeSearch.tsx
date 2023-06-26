@@ -4,6 +4,7 @@ import { getRecipe } from "@/lib/getRecipe";
 import { AppContext } from "@/app/providers";
 import RecipeCard from "@/app/components/RecipeCard";
 import parseRecipeString from "@/lib/parseResponseString";
+import { fetchPantryItems } from "@/lib/getPantryItems";
 
 const optionStyles = {
   display: "flex",
@@ -192,7 +193,9 @@ export default function RecipeSearch({ ingredients, options }: Props) {
           <ul>
             {ingredients
               .filter((ingredient) =>
-                ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
+                ingredient.knownAs
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
               )
               .slice(0, 20)
               .map((ingredient) => (
@@ -200,13 +203,13 @@ export default function RecipeSearch({ ingredients, options }: Props) {
                   <input
                     type="checkbox"
                     name="selectedIngredients"
-                    value={ingredient.name}
+                    value={ingredient.knownAs}
                     checked={promptParams.selectedIngredients.some(
-                      (selected) => selected === ingredient.name
+                      (selected) => selected === ingredient.knownAs
                     )}
                     onChange={handleCheckboxChange}
                   />
-                  {ingredient.name}
+                  {ingredient.knownAs}
                 </li>
               ))}
           </ul>

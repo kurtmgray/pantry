@@ -92,3 +92,5 @@ type PantryItem = EdamamIngredient["food"] & {
   id: number;
   userId: number;
 };
+
+type PantryItemsCallback = (items: PantryItem[]) => void;
