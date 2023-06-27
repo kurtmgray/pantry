@@ -1,14 +1,25 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 type Props = {
   recipe: RecipeDB | RecipeGPT;
 };
+
+function generateRandomNumber() {
+  return Math.floor(Math.random() * 500) + 100;
+}
+
 export default function DashRecipeCard({ recipe }: Props) {
   return (
     <div className="dash__recipe_card">
       <Link href={`/recipes/${recipe.id}`} className="dash__recipe__card-link">
         <div className="dash__recipe__card-container">
-          <img src="https://picsum.photos/150" alt={`${recipe.title} image`} />
+          <Image
+            src={`https://picsum.photos/id/${generateRandomNumber()}/150`}
+            width={150}
+            height={150}
+            alt={`${recipe.title} image`}
+          />
 
           {/* <img src={recipe.imgUrl} alt={`${recipe.title} image`}/> */}
           <div className="dash__recipe_card-text">
