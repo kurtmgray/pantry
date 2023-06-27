@@ -41,25 +41,41 @@
   background-color: #45a049;
 }
 
-.pantry-list {
-  margin-top: 20px;
+.currentPantry {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.h2 {
+.currentPantry h2 {
   margin-bottom: 10px;
 }
 
-.ul {
-  list-style-type: none;
-  padding: 0;
+.pantryItem_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 20px;
 }
 
-.li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+.pantryItem_card {
+  border: 1px solid #ccc;
+  padding: 5px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-.li img {
-  margin-right: 10px;
+.pantryItem_card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pantryItem_card h3 {
+  margin: 3px;
+}
+
+.pantryItem_card img {
+  max-width: 100%;
+  border-radius: 5px;
 }

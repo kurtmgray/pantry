@@ -44,6 +44,7 @@ main {
   font-family: "Great Vibes", cursive;
   font-size: 88px;
   margin: 3rem;
+  color: red;
 }
 
 .subheading {
@@ -92,6 +93,7 @@ main {
 .navbar__link {
   text-decoration: none;
   color: #333;
+  padding: 10px;
 }
 
 .navbar__button {
