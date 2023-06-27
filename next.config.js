@@ -11,6 +11,12 @@ const nextConfig = {
         port: "",
         pathname: "/id/**/150",
       },
+      {
+        protocol: "https",
+        hostname: "www.edamam.com",
+        port: "",
+        pathname: "/food-img/**",
+      },
     ],
   },
   // fix for bcrypt issue
