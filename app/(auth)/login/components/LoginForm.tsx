@@ -1,12 +1,15 @@
 "use client";
-
 import { useState, ChangeEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Alert from "../../components/Alert";
 
-export default function LoginForm() {
+type FormComponentProps = {
+  formStyles: { [key: string]: string };
+};
+
+export default function LoginForm({ formStyles }: FormComponentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
@@ -58,10 +61,13 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        <label htmlFor="email">Email</label>
+    <form className={formStyles.form} onSubmit={onSubmit}>
+      <div className={formStyles.group}>
+        <label className={formStyles.label} htmlFor="email">
+          Email
+        </label>
         <input
+          className={formStyles.input}
           required
           value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -71,9 +77,12 @@ export default function LoginForm() {
           type="email"
         />
       </div>
-      <div>
-        <label htmlFor="password">Password</label>
+      <div className={formStyles.group}>
+        <label className={formStyles.label} htmlFor="password">
+          Password
+        </label>
         <input
+          className={formStyles.input}
           required
           value={password}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -84,7 +93,9 @@ export default function LoginForm() {
         />
       </div>
       <div>
-        <button type="submit">Login</button>
+        <button className={formStyles.button} type="submit">
+          Login
+        </button>
       </div>
       {error && <Alert error={error} />}
     </form>

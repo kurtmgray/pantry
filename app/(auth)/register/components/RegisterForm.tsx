@@ -1,9 +1,12 @@
 "use client";
-
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 
-export const RegisterForm = () => {
+type FormComponentProps = {
+  formStyles: { [key: string]: string };
+};
+
+export const RegisterForm = ({ formStyles }: FormComponentProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -11,7 +14,6 @@ export const RegisterForm = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("hello");
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -25,11 +27,9 @@ export const RegisterForm = () => {
         },
       });
       if (res.ok) {
-        console.log("okay");
         signIn();
       } else {
         const resp = await res.json();
-        console.log(resp);
         setError(resp.error);
       }
     } catch (error: any) {
@@ -39,21 +39,27 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            required
-            value={name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setName(e.target.value)
-            }
-            id="name"
-          />
-        </div>
-        <label htmlFor="email">Email</label>
+    <form className={formStyles.form} onSubmit={onSubmit}>
+      <div className={formStyles.group}>
+        <label className={formStyles.label} htmlFor="name">
+          Name
+        </label>
         <input
+          className={formStyles.input}
+          required
+          value={name}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setName(e.target.value)
+          }
+          id="name"
+        />
+      </div>
+      <div className={formStyles.group}>
+        <label className={formStyles.label} htmlFor="email">
+          Email
+        </label>
+        <input
+          className={formStyles.input}
           required
           value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -63,9 +69,13 @@ export const RegisterForm = () => {
           type="email"
         />
       </div>
-      <div>
-        <label htmlFor="password">Password</label>
+
+      <div className={formStyles.group}>
+        <label className={formStyles.label} htmlFor="password">
+          Password
+        </label>
         <input
+          className={formStyles.input}
           required
           value={password}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -76,7 +86,9 @@ export const RegisterForm = () => {
         />
       </div>
       <div>
-        <button type="submit">Register</button>
+        <button className={formStyles.button} type="submit">
+          Register
+        </button>
       </div>
       {error && <div>{error}</div>}
     </form>

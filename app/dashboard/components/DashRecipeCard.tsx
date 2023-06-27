@@ -5,6 +5,7 @@ type Props = {
   recipe: RecipeDB | RecipeGPT;
 };
 
+// for placeholder images
 function generateRandomNumber() {
   return Math.floor(Math.random() * 500) + 100;
 }
@@ -21,7 +22,12 @@ export default function DashRecipeCard({ recipe }: Props) {
             alt={`${recipe.title} image`}
           />
 
-          {/* <img src={recipe.imgUrl} alt={`${recipe.title} image`}/> */}
+          {/* <Image 
+            src={recipe.imgUrl}  
+            width={150}
+            height={150} 
+            alt={`${recipe.title} image`}
+          /> */}
           <div className="dash__recipe_card-text">
             <h2>{recipe.title}</h2>
             <h3>{recipe.summary}</h3>

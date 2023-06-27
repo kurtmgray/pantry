@@ -1,7 +1,6 @@
-import "./globals.css";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { LoginButton, LogoutButton } from "./components/AuthButtons";
+import { LoginButton } from "./components/AuthButtons";
 import { CustomSession } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,8 +20,8 @@ export default async function Home() {
         Explore a world of mouthwatering possibilities with Pantry, your trusted
         companion in the kitchen! Discover a world of delicious possibilities as
         we help you unlock the full potential of your pantry ingredients.
-        Whether you're a seasoned culinary enthusiast or a passionate home cook,
-        let Pantry inspire your culinary creations
+        Whether you`&apos;`re a seasoned culinary enthusiast or a passionate
+        home cook, let Pantry inspire your culinary creations
       </p>
       <div className="landing-buttons">{!user && <LoginButton />}</div>
       <Link href="/register">Register</Link>

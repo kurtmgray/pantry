@@ -23,10 +23,10 @@ const getValue = (lines: string[], key: string): string => {
   const targetLine = lines.find((line) => line.includes(key));
   return targetLine ? targetLine.split(": ")[1] : "";
 };
-export default function parseRecipeString(recipeString: string): ParsedRecipe {
+export default function parseRecipeString(recipeString: string): RecipeGPT {
   console.log(recipeString);
   const lines = recipeString.trim().split("\n");
-  const recipe: ParsedRecipe = {
+  const recipe: RecipeGPT = {
     id: getValue(lines, "_ID"),
     title: getValue(lines, "_TITLE"),
     summary: getValue(lines, "_SUMMARY"),

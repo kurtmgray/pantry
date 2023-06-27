@@ -1,3 +1,4 @@
+import "./globals.css";
 import Navbar from "./components/Navbar";
 import { AppSessionProvider, AppContextProvider } from "./providers";
 
@@ -6,7 +7,7 @@ export const metadata = {
   description: "Where your food dreams become nightmares.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;

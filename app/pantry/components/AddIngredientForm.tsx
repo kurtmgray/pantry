@@ -4,12 +4,16 @@ import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
 import { categories } from "@/lib/getIngredientsByCategory";
 import IngredientCard from "./IngredientCard";
 
-export default function AddIngredientForm() {
+type FormComponentProps = {
+  formStyles: { [key: string]: string };
+};
+
+export default function AddIngredientForm({ formStyles }: FormComponentProps) {
   const [ingredient, setIngredient] = useState({
     category: "",
     name: "",
-    quantity: "",
-    unit: "",
+    // quantity: "",
+    // unit: "",
   });
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
@@ -73,8 +77,8 @@ export default function AddIngredientForm() {
     setIngredient({
       category: "",
       name: "",
-      quantity: "",
-      unit: "",
+      // quantity: "",
+      // unit: "",
     });
   };
 
@@ -96,28 +100,36 @@ export default function AddIngredientForm() {
   );
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="category">Category:</label>
-        <select
-          id="category"
-          name="category"
-          value={ingredient.category}
-          onChange={handleCategoryChange}
-        >
-          <option value="">-- Select Category --</option>
+    <div>
+      <h1>Add an ingredient:</h1>
+      <form className={formStyles.form} onSubmit={handleSubmit}>
+        <div className={formStyles.group}>
+          <label className={formStyles.label} htmlFor="category">
+            Category:
+          </label>
+          <select
+            className={formStyles.select}
+            id="category"
+            name="category"
+            value={ingredient.category}
+            onChange={handleCategoryChange}
+          >
+            <option value="">-- Select Category --</option>
 
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
         {ingredient.category != "" && (
-          <div>
-            <label htmlFor="ingredient">Ingredient:</label>
+          <div className={formStyles.group}>
+            <label className={formStyles.label} htmlFor="ingredient">
+              Ingredient:
+            </label>
             <select
+              className={formStyles.select}
               id="ingredient"
               name="ingredient"
               onChange={handleIngredientChange}
@@ -131,43 +143,53 @@ export default function AddIngredientForm() {
             </select>
           </div>
         )}
-      </div>
-      {ingredient.name.length > 0 && (
-        <>
-          <div>
-            <label htmlFor="quantity">Quantity:</label>
-            <select
-              id="quantity"
-              name="quantity"
-              value={ingredient.quantity}
-              onChange={handleInputChange}
-            >
-              <option value="">-- Select Quantity --</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="unit">Unit:</label>
-            <select
-              id="unit"
-              name="unit"
-              value={ingredient.unit}
-              onChange={handleInputChange}
-            >
-              <option value="">-- Select Unit --</option>
-              <option value="grams">grams</option>
-              <option value="cups">cups</option>
-              <option value="teaspoons">teaspoons</option>
-              {/* Add more options as needed */}
-            </select>
-          </div>
-        </>
-      )}
-      <button type="submit" disabled={hasEmptyValues}>
-        Find Ingredient
-      </button>
+
+        {/* {ingredient.name.length > 0 && (
+          <>
+            <div className={formStyles.group}>
+              <label className={formStyles.label} htmlFor="quantity">
+                Quantity:
+              </label>
+              <select
+                className={formStyles.select}
+                id="quantity"
+                name="quantity"
+                value={ingredient.quantity}
+                onChange={handleInputChange}
+              >
+                <option value="">-- Select Quantity --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            <div className={formStyles.group}>
+              <label className={formStyles.label} htmlFor="unit">
+                Unit:
+              </label>
+              <select
+                className={formStyles.select}
+                id="unit"
+                name="unit"
+                value={ingredient.unit}
+                onChange={handleInputChange}
+              >
+                <option value="">-- Select Unit --</option>
+                <option value="grams">grams</option>
+                <option value="cups">cups</option>
+                <option value="teaspoons">teaspoons</option>
+              </select>
+            </div>
+          </>
+        )} */}
+        <button
+          className={formStyles.button}
+          type="submit"
+          disabled={hasEmptyValues}
+        >
+          Find Ingredient
+        </button>
+      </form>
 
       {ingredientsFromEdamam &&
         ingredientsFromEdamam.map((ingredient, idx) => (
@@ -177,6 +199,6 @@ export default function AddIngredientForm() {
             onCreatePantryItem={handleCreatePantryItem}
           />
         ))}
-    </form>
+    </div>
   );
 }
