@@ -8,7 +8,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Montserrat", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -148,6 +148,13 @@ main {
   margin: 0 auto;
 }
 
+.search-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+}
+
 .dash__recipe__card {
   background-color: #fff;
   border-radius: 4px;
@@ -165,7 +172,8 @@ main {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-top: 1rem;
+
+  padding: 1rem;
 }
 
 .dash__recipe__card-container img {
@@ -197,4 +205,14 @@ main {
   font-size: 16px;
   font-weight: normal;
   padding-bottom: 20px;
+}
+
+.activeLink {
+  font-weight: bold;
+  background: radial-gradient(
+    ellipse at center,
+    #83c36e 0%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  text-shadow: 0 0 2px #fff;
 }
