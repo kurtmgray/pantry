@@ -1,24 +1,33 @@
-"use client";
-import { useState, MouseEvent, ChangeEvent, FormEvent, useEffect } from "react";
+import {
+  useState,
+  MouseEvent,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  SetStateAction,
+} from "react";
 import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
 import { categories } from "@/lib/getIngredientsByCategory";
 import IngredientCard from "./IngredientCard";
 
 type FormComponentProps = {
   formStyles: { [key: string]: string };
+  addPantryItem: (ingredientsFromEdamam: EdamamIngredient[]) => void;
 };
 
-export default function AddIngredientForm({ formStyles }: FormComponentProps) {
+export default function AddIngredientForm({
+  formStyles,
+  addPantryItem,
+}: FormComponentProps) {
   const [ingredient, setIngredient] = useState({
     category: "",
     name: "",
-    // quantity: "",
-    // unit: "",
   });
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
     EdamamIngredient[]
   >([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log(ingredient);
@@ -30,8 +39,6 @@ export default function AddIngredientForm({ formStyles }: FormComponentProps) {
       ...prevIngredient,
       category: selectedCategory,
     }));
-    // TODO: Fetch ingredients based on the selected category from the database
-    // simulate the data for each category
     const categoryIngredients = getIngredientsByCategory(selectedCategory);
     setIngredients(categoryIngredients);
   };
@@ -56,42 +63,41 @@ export default function AddIngredientForm({ formStyles }: FormComponentProps) {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Handle saving the ingredient to the database
-    console.log("Saving ingredient:", ingredient);
+    setIsLoading(true);
+    console.log("Looking for ingredient:", ingredient);
     const getIngredientToAdd = async (ingredientName: string) => {
-      const response = await fetch(`/api/ingredients/?ingr=${ingredientName}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data.parsed);
-        setIngredientsFromEdamam(data.parsed);
+      try {
+        const response = await fetch(
+          `/api/ingredients/?ingr=${ingredientName}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(response);
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data.parsed);
+          setIngredientsFromEdamam(data.parsed);
+        }
+      } catch (error) {
+        console.error("Error fetching ingredient: ", error);
       }
     };
-    getIngredientToAdd(ingredient.name);
-    // Reset the form
+    await getIngredientToAdd(ingredient.name);
     setIngredient({
       category: "",
       name: "",
-      // quantity: "",
-      // unit: "",
     });
+    setIsLoading(false);
   };
 
   const handleCreatePantryItem = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const response = await fetch(`/api/ingredients`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ingredientsFromEdamam),
-    });
-    console.log(response);
+    addPantryItem(ingredientsFromEdamam);
     setIngredientsFromEdamam([]);
   };
 
@@ -101,95 +107,60 @@ export default function AddIngredientForm({ formStyles }: FormComponentProps) {
 
   return (
     <div>
-      <h1>Add an ingredient:</h1>
-      <form className={formStyles.form} onSubmit={handleSubmit}>
-        <div className={formStyles.group}>
-          <label className={formStyles.label} htmlFor="category">
-            Category:
-          </label>
-          <select
-            className={formStyles.select}
-            id="category"
-            name="category"
-            value={ingredient.category}
-            onChange={handleCategoryChange}
-          >
-            <option value="">-- Select Category --</option>
-
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
-        {ingredient.category != "" && (
+      {isLoading ? (
+        <h1 className={formStyles.loading}> Loading... </h1>
+      ) : (
+        <form className={formStyles.form} onSubmit={handleSubmit}>
+          <h1>Add an ingredient:</h1>
           <div className={formStyles.group}>
-            <label className={formStyles.label} htmlFor="ingredient">
-              Ingredient:
+            <label className={formStyles.label} htmlFor="category">
+              Category:
             </label>
             <select
               className={formStyles.select}
-              id="ingredient"
-              name="ingredient"
-              onChange={handleIngredientChange}
+              id="category"
+              name="category"
+              value={ingredient.category}
+              onChange={handleCategoryChange}
             >
-              <option value="">-- Select Ingredient --</option>
-              {ingredients.map((ingredient) => (
-                <option key={ingredient} value={ingredient}>
-                  {ingredient}
+              <option value="">-- Select Category --</option>
+
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
                 </option>
               ))}
             </select>
           </div>
-        )}
-
-        {/* {ingredient.name.length > 0 && (
-          <>
+          {ingredient.category != "" && (
             <div className={formStyles.group}>
-              <label className={formStyles.label} htmlFor="quantity">
-                Quantity:
+              <label className={formStyles.label} htmlFor="ingredient">
+                Ingredient:
               </label>
               <select
                 className={formStyles.select}
-                id="quantity"
-                name="quantity"
-                value={ingredient.quantity}
-                onChange={handleInputChange}
+                id="ingredient"
+                name="ingredient"
+                onChange={handleIngredientChange}
               >
-                <option value="">-- Select Quantity --</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+                <option value="">-- Select Ingredient --</option>
+                {ingredients.map((ingredient) => (
+                  <option key={ingredient} value={ingredient}>
+                    {ingredient}
+                  </option>
+                ))}
               </select>
             </div>
-            <div className={formStyles.group}>
-              <label className={formStyles.label} htmlFor="unit">
-                Unit:
-              </label>
-              <select
-                className={formStyles.select}
-                id="unit"
-                name="unit"
-                value={ingredient.unit}
-                onChange={handleInputChange}
-              >
-                <option value="">-- Select Unit --</option>
-                <option value="grams">grams</option>
-                <option value="cups">cups</option>
-                <option value="teaspoons">teaspoons</option>
-              </select>
-            </div>
-          </>
-        )} */}
-        <button
-          className={formStyles.button}
-          type="submit"
-          disabled={hasEmptyValues}
-        >
-          Find Ingredient
-        </button>
-      </form>
+          )}
+          <button
+            className={formStyles.button}
+            type="submit"
+            disabled={hasEmptyValues}
+          >
+            Find Ingredient
+          </button>
+        </form>
+      )}
 
       {ingredientsFromEdamam &&
         ingredientsFromEdamam.map((ingredient, idx) => (

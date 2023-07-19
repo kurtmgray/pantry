@@ -32,9 +32,9 @@ export default function Recipes() {
     };
     fetchPantryItems(updatePantryItems);
   }, []);
-  useEffect(() => {
-    console.log(pantryItems);
-  }, [pantryItems]);
+  // useEffect(() => {
+  //   console.log(pantryItems);
+  // }, [pantryItems]);
 
   return (
     <div>

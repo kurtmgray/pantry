@@ -13,6 +13,14 @@
   margin-bottom: 20px;
 }
 
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Great Vibes", cursive;
+}
+
 .group {
   margin-bottom: 10px;
 }
@@ -78,4 +86,66 @@
 .pantryItem_card img {
   max-width: 100%;
   border-radius: 5px;
+}
+
+.ingredient_card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ingredient_card__info {
+  flex: 1;
+}
+
+.ingredient_card__image {
+  flex-shrink: 0;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cardHeader h2 {
+  margin: 0;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.cardBody h4 {
+  margin: 0;
+}
+
+.cardBody p {
+  margin: 4px 0;
+}
+
+.cardBody button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cardBody button:hover {
+  background-color: #45a049;
 }

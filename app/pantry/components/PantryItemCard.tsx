@@ -2,6 +2,7 @@ import React, { useState, useEffect, MouseEvent } from "react";
 import Image from "next/image";
 
 // working on hover div
+// add nutrition to ingredient schema
 
 type Props = {
   pantryItem: PantryItem;
@@ -12,26 +13,30 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setMousePosition({ x: 0, y: 0 });
-  };
-
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+  const handleMouseClick = (event: MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = event;
-    setMousePosition({ x: clientX, y: clientY });
+    if (mousePosition.x === 0 && mousePosition.y === 0) {
+      setMousePosition({ x: clientX, y: clientY });
+    } else {
+      setMousePosition({ x: 0, y: 0 });
+    }
+    setIsHovered(!isHovered);
   };
+
+  //   const handleMouseLeave = () => {
+  //     setIsHovered(false);
+  //     setMousePosition({ x: 0, y: 0 });
+  //   };
+
+  //   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+  //     const { clientX, clientY } = event;
+  //     setMousePosition({ x: clientX, y: clientY });
+  //   };
 
   return (
     <div
       className={`${itemStyles.pantryItem_card} ${isHovered ? "hovered" : ""}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={(e) => handleMouseMove(e)}
+      onClick={handleMouseClick}
       key={pantryItem.id}
     >
       <h3>{pantryItem.label}</h3>
@@ -41,7 +46,7 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
         width={100}
         alt={pantryItem.knownAs}
       />
-      {isHovered && (
+      {/* {isHovered && (
         <div
           className="hover-message"
           style={{
@@ -52,8 +57,9 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
           }}
         >
           <p>Nutrition: {pantryItem.knownAs}</p>
+          <p>Nutrition: {pantryItem.nutrients["chocdf"]}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

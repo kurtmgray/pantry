@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import { fetchPantryItems } from "@/lib/getPantryItems";
 import PantryItemCard from "./PantryItemCard";
@@ -9,28 +8,16 @@ import PantryItemCard from "./PantryItemCard";
 
 type Props = {
   listStyles: { [key: string]: string };
+  pantryItems: PantryItem[];
+  setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
 };
 
-export default function PantryList({ listStyles }: Props) {
-  const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
-
+export default function PantryList({
+  listStyles,
+  pantryItems,
+  setPantryItems,
+}: Props) {
   useEffect(() => {
-    // const fetchPantryItems = async () => {
-    //   try {
-    //     const response = await fetch("/api/pantry");
-    //     if (response.ok) {
-    //       const data = await response.json();
-    //       console.log(data);
-    //       setPantryItems(data);
-    //     } else {
-    //       throw new Error("Failed to fetch pantry items");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching pantry items:", error);
-    //     return [];
-    //   }
-    // };
-    // fetchPantryItems();
     const updatePantryItems: PantryItemsCallback = (data) => {
       setPantryItems(data);
     };
