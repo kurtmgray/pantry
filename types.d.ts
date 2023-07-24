@@ -72,6 +72,7 @@ interface RecipeGPT extends RecipeData {
 
 type EdamamIngredient = {
   food: {
+    brand: string;
     category: string;
     categoryLabel: string;
     foodId: string;

@@ -13,23 +13,29 @@ export default function IngredientCard({
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
+        <div>
         <h2>{ingredient.food.label}</h2>
+          {ingredient.food.brand ? <p>{ingredient.food.brand}</p> : <p>Generic</p>}
+        </div>
+      </div>
+      <div className={styles.cardBody}>
+        {ingredient.food.image ?
         <Image
           src={ingredient.food.image}
           width={100}
           height={100}
           alt={`image of ${ingredient.food.knownAs}`}
-        />
-      </div>
-      <div className={styles.cardBody}>
-        <div>
+        /> :
+        <p className={styles.noImage}>No image available</p>
+        }
+        <div className={styles.cardNutrients}>
           <h4>Nutrients per 100g</h4>
-          <p>Calories: {ingredient.food.nutrients.ENERC_KCAL}kcal</p>
-          <p>Protein: {ingredient.food.nutrients.PROCNT}g</p>
-          <p>Carbs: {ingredient.food.nutrients.CHOCDF}g</p>
-          <p>Fat: {ingredient.food.nutrients.FAT}g</p>
+          <p>Calories: {ingredient.food.nutrients.ENERC_KCAL.toFixed(1)} kcal</p>
+          <p>Protein: {ingredient.food.nutrients.PROCNT.toFixed(1)} g</p>
+          <p>Carbs: {ingredient.food.nutrients.CHOCDF.toFixed(1)} g</p>
+          <p>Fat: {ingredient.food.nutrients.FAT.toFixed(1)} g</p>
+        <button id={ingredient.food.foodId} onClick={(e) => onCreatePantryItem(e)}>Add to Pantry</button>
         </div>
-        <button onClick={(e) => onCreatePantryItem(e)}>Add to Pantry</button>
       </div>
     </div>
   );

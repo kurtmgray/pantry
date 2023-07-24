@@ -1,175 +1,125 @@
-import {
-  useState,
-  MouseEvent,
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  SetStateAction,
-} from "react";
+import { useState, MouseEvent, ChangeEvent, FormEvent, useEffect } from "react";
 import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
 import { categories } from "@/lib/getIngredientsByCategory";
 import IngredientCard from "./IngredientCard";
 
 type FormComponentProps = {
   formStyles: { [key: string]: string };
-  addPantryItem: (ingredientsFromEdamam: EdamamIngredient[]) => void;
+  addPantryItem: (ingredientFromEdamam: EdamamIngredient) => void;
 };
 
 export default function AddIngredientForm({
   formStyles,
   addPantryItem,
 }: FormComponentProps) {
-  const [ingredient, setIngredient] = useState({
-    category: "",
+  const [ingredientSearch, setIngredientSearch] = useState({
     name: "",
+    brand: "",
   });
-  const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
     EdamamIngredient[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(ingredient);
-  }, [ingredient]);
-
-  const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategory = e.target.value;
-    setIngredient((prevIngredient) => ({
-      ...prevIngredient,
-      category: selectedCategory,
-    }));
-    const categoryIngredients = getIngredientsByCategory(selectedCategory);
-    setIngredients(categoryIngredients);
-  };
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setIngredient((prevIngredient) => ({
+    setIngredientSearch((prevIngredient) => ({
       ...prevIngredient,
       [name]: value,
     }));
   };
 
-  const handleIngredientChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedIngredient = e.target.value;
-    // TODO: Handle selected ingredient
-    console.log("Selected Ingredient:", selectedIngredient);
-    setIngredient((prevIngredient) => ({
-      ...prevIngredient,
-      name: selectedIngredient,
-    }));
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO: Handle saving the ingredient to the database
     setIsLoading(true);
-    console.log("Looking for ingredient:", ingredient);
-    const getIngredientToAdd = async (ingredientName: string) => {
+    console.log("Looking for ingredient:", ingredientSearch);
+    const getIngredientToAdd = async (
+      ingredientName: string,
+      ingredientBrand: string
+    ) => {
+      const url = "/api/ingredients/";
+      const params = `?ingr=${ingredientName}${
+        ingredientBrand !== "" ? `&brand=${ingredientBrand}` : ""
+      }`;
+      console.log("params: ", params);
       try {
-        const response = await fetch(
-          `/api/ingredients/?ingr=${ingredientName}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const response = await fetch(url + params, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
         console.log(response);
         if (response.ok) {
           const data = await response.json();
-          console.log(data.parsed);
-          setIngredientsFromEdamam(data.parsed);
+          const ingredientsWithImg: EdamamIngredient[] = data.hints.filter(
+            (ingr: EdamamIngredient) => ingr.food.image
+          );
+          ingredientsWithImg.length > 0 &&
+            setIngredientsFromEdamam(ingredientsWithImg.slice(0, 5));
         }
       } catch (error) {
         console.error("Error fetching ingredient: ", error);
       }
     };
-    await getIngredientToAdd(ingredient.name);
-    setIngredient({
-      category: "",
+    await getIngredientToAdd(ingredientSearch.name, ingredientSearch.brand);
+    setIngredientSearch({
       name: "",
+      brand: "",
     });
     setIsLoading(false);
   };
 
   const handleCreatePantryItem = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    addPantryItem(ingredientsFromEdamam);
+    console.log(e.currentTarget.id);
+    const ingredientToAdd = ingredientsFromEdamam.find(
+      (ingr) => ingr.food.foodId === e.currentTarget.id
+    );
+    console.log(ingredientToAdd);
+    ingredientToAdd && addPantryItem(ingredientToAdd);
     setIngredientsFromEdamam([]);
   };
 
-  const hasEmptyValues = Object.values(ingredient).some(
-    (value) => value === ""
-  );
-
   return (
     <div>
-      {isLoading ? (
-        <h1 className={formStyles.loading}> Loading... </h1>
-      ) : (
-        <form className={formStyles.form} onSubmit={handleSubmit}>
-          <h1>Add an ingredient:</h1>
-          <div className={formStyles.group}>
-            <label className={formStyles.label} htmlFor="category">
-              Category:
-            </label>
-            <select
-              className={formStyles.select}
-              id="category"
-              name="category"
-              value={ingredient.category}
-              onChange={handleCategoryChange}
-            >
-              <option value="">-- Select Category --</option>
-
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-          {ingredient.category != "" && (
-            <div className={formStyles.group}>
-              <label className={formStyles.label} htmlFor="ingredient">
-                Ingredient:
-              </label>
-              <select
-                className={formStyles.select}
-                id="ingredient"
-                name="ingredient"
-                onChange={handleIngredientChange}
-              >
-                <option value="">-- Select Ingredient --</option>
-                {ingredients.map((ingredient) => (
-                  <option key={ingredient} value={ingredient}>
-                    {ingredient}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          <button
-            className={formStyles.button}
-            type="submit"
-            disabled={hasEmptyValues}
-          >
-            Find Ingredient
-          </button>
-        </form>
-      )}
-
-      {ingredientsFromEdamam &&
-        ingredientsFromEdamam.map((ingredient, idx) => (
-          <IngredientCard
-            key={idx}
-            ingredient={ingredient}
-            onCreatePantryItem={handleCreatePantryItem}
-          />
-        ))}
+      <h1>Search for food items:</h1>
+      <div className={formStyles.searchBar}>
+        {isLoading ? (
+          <h1 className={formStyles.loading}> Loading... </h1>
+        ) : (
+          <form className={formStyles.form} onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Food"
+              value={ingredientSearch.name}
+              onChange={(e) => handleInputChange(e)}
+            />
+            <input
+              type="text"
+              name="brand"
+              placeholder="Brand"
+              value={ingredientSearch.brand}
+              onChange={(e) => handleInputChange(e)}
+            />
+            <button type="submit">Submit</button>
+          </form>
+        )}
+        <button onClick={() => setIngredientsFromEdamam([])}>
+          Clear Search Results
+        </button>
+      </div>
+      <div className={formStyles.ingredients}>
+        {ingredientsFromEdamam &&
+          ingredientsFromEdamam.map((ingredient, idx) => (
+            <IngredientCard
+              key={idx}
+              ingredient={ingredient}
+              onCreatePantryItem={handleCreatePantryItem}
+            />
+          ))}
+      </div>
     </div>
   );
 }

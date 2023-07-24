@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import { fetchPantryItems } from "@/lib/getPantryItems";
 import PantryItemCard from "./PantryItemCard";
 
-// working here
-// want this component to re-render when addingredientform is submitted
-// how do i want to use global state, and/or do i place more logic into the parent component?
-
 type Props = {
   listStyles: { [key: string]: string };
   pantryItems: PantryItem[];
@@ -22,7 +18,7 @@ export default function PantryList({
       setPantryItems(data);
     };
     fetchPantryItems(updatePantryItems);
-  }, []);
+  }, [setPantryItems]);
 
   return (
     <div className={listStyles.currentPantry}>
@@ -31,8 +27,10 @@ export default function PantryList({
         <p>No items in the pantry</p>
       ) : (
         <div className={listStyles.pantryItem_container}>
-          {pantryItems.map((item) => (
-            <PantryItemCard itemStyles={listStyles} pantryItem={item} />
+          {[...pantryItems].sort((a, b) =>
+      a.label.localeCompare(b.label)
+    ).map((item) => (
+            <PantryItemCard key={item.id} itemStyles={listStyles} pantryItem={item} />
           ))}
         </div>
       )}

@@ -9,14 +9,14 @@ import { CustomSession } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
   const ingredient = request.nextUrl.searchParams.get("ingr");
-  console.log("ingr: ", ingredient);
+  const brand = request.nextUrl.searchParams.get("brand");
   if (ingredient) {
     try {
-      const queryString = `?app_id=${process.env.NEXT_PUBLIC_EDAMAM_APP_ID}&app_key=${process.env.NEXT_PUBLIC_EDAMAM_API_KEY}&ingr=${ingredient}`;
-      const data = await fetch(
-        `https://api.edamam.com/api/food-database/v2/parser${queryString}`
-      );
+      const url = "https://api.edamam.com/api/food-database/v2/parser"
+      const queryString = `?app_id=${process.env.NEXT_PUBLIC_EDAMAM_APP_ID}&app_key=${process.env.NEXT_PUBLIC_EDAMAM_API_KEY}&ingr=${ingredient}$${brand !== null ? `&brand=${brand}` : ""}`
+      const data = await fetch(url + queryString);
       const json = await data.json();
+      console.log("json: ", json);
       return NextResponse.json(json);
     } catch (error) {
       console.log("err:", error);
@@ -29,11 +29,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const data: EdamamIngredient[] = await request.json();
+  const data: EdamamIngredient = await request.json();
   const session: CustomSession | null = await getServerSession(authOptions);
-  if (data.length > 0) {
+  if (data.food.foodId !== undefined) {
     const {
       food: {
+        brand,
         category,
         categoryLabel,
         label,
@@ -41,11 +42,13 @@ export async function POST(request: NextRequest) {
         image,
         nutrients: { ENERC_KCAL, PROCNT, FAT, CHOCDF },
       },
-    } = data[0];
+    } = data;
+    console.log("46",data)
     if (session) {
       try {
         const pantryItem = await prisma.pantryItem.create({
           data: {
+            brand: brand ? brand : undefined,
             label: label,
             userId: parseInt(session.user.id),
             knownAs: knownAs,
@@ -66,13 +69,36 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(pantryItem);
       } catch (error) {
         console.error("Error creating PantryItem:", error);
-        // Handle the error when creating the pantry item
+        return NextResponse.error()
       } finally {
         await prisma.$disconnect();
       }
     } else {
       console.error("No session available");
       // Handle the case when there is no session available
+    }
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const data: { ingredientId: string } = await request.json();
+  const session: CustomSession | null = await getServerSession(authOptions);
+
+  if (session) {
+    try {
+      const ingredientId = data.ingredientId;
+
+      const deletedPantryItem = await prisma.pantryItem.delete({
+        where: { id: parseInt(ingredientId) },
+      });
+
+      console.log("Deleted PantryItem:", deletedPantryItem);
+      return NextResponse.json({ message: "Ingredient deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting PantryItem:", error);
+      return NextResponse.error();
+    } finally {
+      await prisma.$disconnect();
     }
   }
 }

@@ -23,6 +23,7 @@ model User {
 
 model PantryItem {
   id         Int    @id @default(autoincrement())
+  brand      String @default("Generic")
   label      String
   userId     Int
   user       User   @relation("PantryItemsForUser", fields: [userId], references: [id])

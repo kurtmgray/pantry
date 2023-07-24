@@ -7,13 +7,13 @@ import { useState } from "react";
 export default function Pantry() {
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
 
-  const addPantryItem = async (ingredientsFromEdamam: EdamamIngredient[]) => {
+  const addPantryItem = async (ingredientFromEdamam: EdamamIngredient) => {
     const response = await fetch(`/api/ingredients`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(ingredientsFromEdamam),
+      body: JSON.stringify(ingredientFromEdamam),
     });
     const addedItem = await response.json();
     setPantryItems((prevPantryItems) => [...prevPantryItems, addedItem]);

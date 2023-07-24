@@ -23,6 +23,22 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
     setIsHovered(!isHovered);
   };
 
+  const handleDeleteItem = async () => {
+    try {
+      // Replace 'your_delete_endpoint' with the actual endpoint to delete the item
+      const response = await fetch(`/api/ingredients/${pantryItem.id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        // Handle successful deletion, e.g., update state or fetch updated pantry items
+        console.log("Item deleted successfully.");
+      } else {
+        console.error("Failed to delete item.");
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
   //   const handleMouseLeave = () => {
   //     setIsHovered(false);
   //     setMousePosition({ x: 0, y: 0 });
@@ -35,9 +51,12 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
 
   return (
     <div
-      className={`${itemStyles.pantryItem_card} ${isHovered ? "hovered" : ""}`}
+      className={`${itemStyles.pantryItemCard} ${
+        isHovered && itemStyles.darken
+      }`}
       onClick={handleMouseClick}
-      key={pantryItem.id}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <h3>{pantryItem.label}</h3>
       <Image
@@ -46,20 +65,11 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
         width={100}
         alt={pantryItem.knownAs}
       />
-      {/* {isHovered && (
-        <div
-          className="hover-message"
-          style={{
-            position: "absolute",
-            left: mousePosition.x,
-            top: mousePosition.y,
-            backgroundColor: "white",
-          }}
-        >
-          <p>Nutrition: {pantryItem.knownAs}</p>
-          <p>Nutrition: {pantryItem.nutrients["chocdf"]}</p>
-        </div>
-      )} */}
+      {isHovered && (
+        <button className={itemStyles.deleteButton} onClick={handleDeleteItem}>
+          Delete
+        </button>
+      )}
     </div>
   );
 }
