@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
         nutrients: { ENERC_KCAL, PROCNT, FAT, CHOCDF },
       },
     } = data;
-    console.log("46",data)
     if (session) {
       try {
         const pantryItem = await prisma.pantryItem.create({
@@ -75,25 +74,27 @@ export async function POST(request: NextRequest) {
       }
     } else {
       console.error("No session available");
-      // Handle the case when there is no session available
+      // Handle no session available
     }
   }
 }
 
 export async function DELETE(request: NextRequest) {
-  const data: { ingredientId: string } = await request.json();
+  const ingredientId = request.nextUrl.searchParams.get("id");
   const session: CustomSession | null = await getServerSession(authOptions);
+  console.log("85", ingredientId)
 
   if (session) {
     try {
-      const ingredientId = data.ingredientId;
+      if (ingredientId){
+        const deletedPantryItem = await prisma.pantryItem.delete({
+          where: { id: parseInt(ingredientId) },
+        });
+  
+        console.log("Deleted PantryItem:", deletedPantryItem);
+        return NextResponse.json({ message: "Ingredient deleted successfully" });
+      }
 
-      const deletedPantryItem = await prisma.pantryItem.delete({
-        where: { id: parseInt(ingredientId) },
-      });
-
-      console.log("Deleted PantryItem:", deletedPantryItem);
-      return NextResponse.json({ message: "Ingredient deleted successfully" });
     } catch (error) {
       console.error("Error deleting PantryItem:", error);
       return NextResponse.error();

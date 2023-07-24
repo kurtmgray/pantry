@@ -22,28 +22,27 @@ model User {
 }
 
 model PantryItem {
-  id         Int    @id @default(autoincrement())
-  brand      String @default("Generic")
-  label      String
-  userId     Int
-  user       User   @relation("PantryItemsForUser", fields: [userId], references: [id])
-  knownAs    String
-  category   String
+  id            Int        @id @default(autoincrement())
+  brand         String     @default("Generic")
+  label         String
+  userId        Int
+  user          User       @relation("PantryItemsForUser", fields: [userId], references: [id])
+  knownAs       String
+  category      String
   categoryLabel String
-  image      String
-  nutrients  Nutrient[]
+  image         String
+  nutrients     Nutrient[]
 }
 
 model Nutrient {
-  id          Int      @id @default(autoincrement())
-  enerc_kcal  Float
-  procnt      Float
-  fat         Float
-  chocdf      Float
+  id           Int        @id @default(autoincrement())
+  enerc_kcal   Float
+  procnt       Float
+  fat          Float
+  chocdf       Float
   pantryItemId Int
-  pantryItem  PantryItem @relation(fields: [pantryItemId], references: [id])
+  pantryItem   PantryItem @relation(fields: [pantryItemId], references: [id], onDelete: Cascade)
 }
-
 
 model Recipe {
   id                Int            @id @default(autoincrement())
@@ -63,8 +62,8 @@ model Recipe {
 }
 
 // }
-  // measurement   Measurement?   @relation(fields: [measurementId], references: [id])
-  // measurementId Int?
+// measurement   Measurement?   @relation(fields: [measurementId], references: [id])
+// measurementId Int?
 // }
 
 model Tag {

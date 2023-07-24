@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, Dispatch, SetStateAction } from "react";
 import { fetchPantryItems } from "@/lib/getPantryItems";
 import PantryItemCard from "./PantryItemCard";
 
 type Props = {
   listStyles: { [key: string]: string };
   pantryItems: PantryItem[];
-  setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
+  setPantryItems: Dispatch<SetStateAction<PantryItem[]>>;
 };
 
 export default function PantryList({
@@ -27,11 +27,16 @@ export default function PantryList({
         <p>No items in the pantry</p>
       ) : (
         <div className={listStyles.pantryItem_container}>
-          {[...pantryItems].sort((a, b) =>
-      a.label.localeCompare(b.label)
-    ).map((item) => (
-            <PantryItemCard key={item.id} itemStyles={listStyles} pantryItem={item} />
-          ))}
+          {[...pantryItems]
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => (
+              <PantryItemCard
+                key={item.id}
+                itemStyles={listStyles}
+                pantryItem={item}
+                setPantryItems={setPantryItems}
+              />
+            ))}
         </div>
       )}
     </div>

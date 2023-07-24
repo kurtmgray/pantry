@@ -28,8 +28,8 @@ export const getRecipe = async (
   } = promptParams;
   try {
     const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. 
-    Recommend a recipe that contains ${selectedIngredients}, in as many of the following stles as possible: ${cuisines}. 
-    Be sensitive to all of the following dietary preferences: ${dietaryPreferences} and allergies: ${allergies}. 
+    Recommend a recipe that contains a tasteful blend of SOME (not necessarily all) of the following: ${selectedIngredients}, in the following styles: ${cuisines}. 
+    Be sensitive to all of the following dietary preferences, if any: ${dietaryPreferences} and allergies, if any: ${allergies}. 
     Please only return recipes of a Michelin Star rated quality. 
     Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. 
     Please send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. 

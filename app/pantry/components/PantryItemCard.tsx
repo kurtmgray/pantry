@@ -1,15 +1,19 @@
-import React, { useState, useEffect, MouseEvent } from "react";
+import React, { useState, MouseEvent, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 
-// working on hover div
 // add nutrition to ingredient schema
 
 type Props = {
   pantryItem: PantryItem;
   itemStyles: { [key: string]: string };
+  setPantryItems: Dispatch<SetStateAction<PantryItem[]>>;
 };
 
-export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
+export default function PantryItemCard({
+  pantryItem,
+  itemStyles,
+  setPantryItems,
+}: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -24,30 +28,24 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
   };
 
   const handleDeleteItem = async () => {
+    console.log(pantryItem.id);
     try {
-      // Replace 'your_delete_endpoint' with the actual endpoint to delete the item
-      const response = await fetch(`/api/ingredients/${pantryItem.id}`, {
+      const response = await fetch(`/api/ingredients/?id=${pantryItem.id}`, {
         method: "DELETE",
       });
       if (response.ok) {
         // Handle successful deletion, e.g., update state or fetch updated pantry items
+        setPantryItems((prevPantryItems) => {
+          return prevPantryItems.filter((item) => item.id !== pantryItem.id);
+        });
         console.log("Item deleted successfully.");
       } else {
         console.error("Failed to delete item.");
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error while deleting item:", error);
     }
   };
-  //   const handleMouseLeave = () => {
-  //     setIsHovered(false);
-  //     setMousePosition({ x: 0, y: 0 });
-  //   };
-
-  //   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-  //     const { clientX, clientY } = event;
-  //     setMousePosition({ x: clientX, y: clientY });
-  //   };
 
   return (
     <div
