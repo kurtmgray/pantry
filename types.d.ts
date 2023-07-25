@@ -57,6 +57,7 @@ interface RecipeData {
   preptime: string;
   cooktime: string;
   category: string;
+  image: string;
 }
 
 interface RecipeDB extends RecipeData {

@@ -5,6 +5,8 @@ import { MouseEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "@/lib/types";
+import { generateRecipeImage } from "@/lib/getRecipe";
+import Image from "next/image";
 
 type Props = {
   recipe: RecipeDB | RecipeGPT;
@@ -18,19 +20,33 @@ enum Status {
 
 export default function RecipeCard({ recipe }: Props) {
   const [recipeStatus, setRecipeStatus] = useState<Status | null>(null);
+  const [image, setImage] = useState<string | null>(null);
   const session = useSession();
   const { user } = session.data as CustomSession;
 
   const isDBRecipe = "addedById" in recipe;
   let recipeData: RecipeDB | RecipeGPT;
 
-  useEffect(() => {
-    isDBRecipe ? setRecipeStatus(null) : setRecipeStatus(Status.NOT_SAVED);
-  }, [recipe]);
-
   isDBRecipe
     ? (recipeData = recipe as RecipeDB)
     : (recipeData = recipe as RecipeGPT);
+
+  useEffect(() => {
+    if (isDBRecipe) {
+      setRecipeStatus(null);
+    } else {
+      async function generateImage() {
+        try {
+          const imageUrl = await generateRecipeImage(recipeData.summary);
+          imageUrl && setImage(imageUrl);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      generateImage();
+      setRecipeStatus(Status.NOT_SAVED);
+    }
+  }, [recipe, isDBRecipe, recipeData.summary]);
 
   const handleSaveRecipe = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -40,6 +56,7 @@ export default function RecipeCard({ recipe }: Props) {
       recipeData = {
         ...recipeData,
         addedById: parseInt(user.id),
+        image: image!,
       };
     }
 
@@ -98,6 +115,9 @@ export default function RecipeCard({ recipe }: Props) {
           <li key={index}>{step}</li>
         ))}
       </ul>
+      {image && (
+        <Image src={image} alt="recipe image" width={256} height={256} />
+      )}
       {recipeStatus === Status.NOT_SAVED && (
         <button onClick={(e) => handleSaveRecipe(e)}>Save Recipe</button>
       )}

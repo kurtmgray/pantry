@@ -17,6 +17,17 @@ const nextConfig = {
         port: "",
         pathname: "/food-img/**",
       },
+      {
+        protocol: "https",
+        hostname: "oaidalleapiprodscus.blob.core.windows.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https", 
+        hostname: "via.placeholder.com", 
+        port: "", 
+       pathname: "/**"},
     ],
   },
   // fix for bcrypt issue

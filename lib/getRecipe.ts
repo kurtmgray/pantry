@@ -57,56 +57,22 @@ export const getRecipe = async (
   }
 };
 
-export async function generateImage(
-  prompt: string
-): Partial<CreateImageResponse> {
-  configuration.baseOptions.headers["Access-Control-Allow-Origin"] = "*";
-  console.log(configuration);
+export async function generateRecipeImage(description: string) {
+  const configuration = new Configuration({
+      apiKey: getApiKey(),
+    });
+  delete configuration.baseOptions.headers["User-Agent"];
+  
+  const openai = new OpenAIApi(configuration);
   const response = await openai.createImage({
-    prompt: prompt,
-    n: 1,
-    size: "256x256",
-  });
-  // const data = JSON.stringify({
-  //   prompt: prompt,
-  //   n: 1,
-  //   size: "256x256",
-  // });
-
-  // const options = {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${getApiKey()}`,
-  //     "Access-Control-Allow-Origin": "*",
-  //   },
-  //   body: data,
-  // };
-  return response.data;
-  // new Promise((resolve, reject) => {
-  //   fetch("https://api.openai.com/v1/images/generations", options)
-  //     .then((response) => {
-  //       console.log(response);
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       if (data.data && data.data.length > 0) {
-  //         console.log(data);
-  //         resolve(data);
-  //       } else {
-  //         console.log(data);
-  //         reject("Error generating lesson plan");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       reject(error);
-  //     });
-  // });
-  // response.data;
+      prompt: description,
+      n: 1,
+      size: "256x256",
+    });
+    const image_url = response.data.data[0].url;
+  return image_url
 }
+
 
 async function generateRecipe(
   prompt: string,

@@ -54,6 +54,7 @@ model Recipe {
   category          RecipeCategory
   ingredients       Json[]
   instructions      String[]
+  image             String         @default("https://via.placeholder.com/150")
   preptime          String         @db.VarChar(255)
   cooktime          String         @db.VarChar(255)
   rating            Int?

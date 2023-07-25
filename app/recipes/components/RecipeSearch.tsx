@@ -77,12 +77,9 @@ export default function RecipeSearch({ ingredients, options }: Props) {
 
   const handleGetRecipe = async () => {
     const data = await getRecipe(promptParams, 1);
-
     if (data.statusCode === 200) {
       setRecipeResponse(data.body!);
     }
-
-    return;
   };
 
   return (

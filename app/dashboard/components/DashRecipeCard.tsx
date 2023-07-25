@@ -16,7 +16,10 @@ export default function DashRecipeCard({ recipe }: Props) {
       <Link href={`/recipes/${recipe.id}`} className="dash__recipe__card-link">
         <div className="dash__recipe__card-container">
           <Image
-            src={`https://picsum.photos/id/${generateRandomNumber()}/150`}
+            src={
+              recipe.image ||
+              `https://picsum.photos/id/${generateRandomNumber()}/150`
+            }
             width={150}
             height={150}
             alt={`${recipe.title} image`}
