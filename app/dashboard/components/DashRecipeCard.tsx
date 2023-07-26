@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,13 +25,6 @@ export default function DashRecipeCard({ recipe }: Props) {
             height={150}
             alt={`${recipe.title} image`}
           />
-
-          {/* <Image 
-            src={recipe.imgUrl}  
-            width={150}
-            height={150} 
-            alt={`${recipe.title} image`}
-          /> */}
           <div className="dash__recipe_card-text">
             <h2>{recipe.title}</h2>
             <h3>{recipe.summary}</h3>

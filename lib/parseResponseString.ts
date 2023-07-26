@@ -23,6 +23,7 @@ const getValue = (lines: string[], key: string): string => {
   const targetLine = lines.find((line) => line.includes(key));
   return targetLine ? targetLine.split(": ")[1] : "";
 };
+
 export default function parseRecipeString(recipeString: string): RecipeGPT {
   console.log(recipeString);
   const lines = recipeString.trim().split("\n");
@@ -35,6 +36,7 @@ export default function parseRecipeString(recipeString: string): RecipeGPT {
     preptime: getValue(lines, "_PREPTIME"),
     cooktime: getValue(lines, "_COOKTIME"),
     category: getValue(lines, "_CATEGORY"),
+    image: "",
   };
   return recipe;
 }

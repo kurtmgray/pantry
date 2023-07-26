@@ -18,14 +18,16 @@ enum Status {
   SAVED,
 }
 
-export default function RecipeCard({ recipe }: Props) {
+export default function RecipeCard({
+  recipe: { id, title, summary, image, ...recipe },
+}: Props) {
   const [recipeStatus, setRecipeStatus] = useState<Status | null>(null);
-  const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const session = useSession();
   const { user } = session.data as CustomSession;
 
-  const isDBRecipe = "addedById" in recipe;
   let recipeData: RecipeDB | RecipeGPT;
+  const isDBRecipe = "addedById" in recipe;
 
   isDBRecipe
     ? (recipeData = recipe as RecipeDB)
@@ -37,8 +39,8 @@ export default function RecipeCard({ recipe }: Props) {
     } else {
       async function generateImage() {
         try {
-          const imageUrl = await generateRecipeImage(recipeData.summary);
-          imageUrl && setImage(imageUrl);
+          const generatedImgUrl = await generateRecipeImage(recipeData.summary);
+          generatedImgUrl && setImageUrl(generatedImgUrl);
         } catch (error) {
           console.log(error);
         }

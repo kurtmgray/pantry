@@ -1,48 +1,58 @@
-"use client";
 import DashRecipeCard from "./components/DashRecipeCard";
-import { useEffect, useContext, useState, ChangeEvent } from "react";
-import { AppContext } from "../providers";
-import { useSession } from "next-auth/react";
+import DashSearchBar from "./components/DashSearchBar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+// import { useSearchParams } from "next/navigation";
 
-export default function Dashboard() {
-  const [globalState, setGlobalState] = useContext(AppContext);
-  const [searchKeyword, setSearchKeyword] = useState("");
+export const dynamic = "force-dynamic";
 
-  // choose how to get session
-  const { data: session, status } = useSession();
+type Props = {
+  recipes: (RecipeDB | RecipeGPT)[];
+};
 
-  useEffect(() => {
-    const email = session?.user?.email;
+const getRecipes = async (email: string) => {
+  // Fetch recipes using the authenticated user's email
+  const url = new URL("/api/recipes", "http://localhost:3000");
+  url.searchParams.set("email", email);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const recipes: (RecipeDB | RecipeGPT)[] = await response.json();
+  return recipes;
+};
 
-    if (status === "loading") {
-      return;
-    }
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string[] | string | undefined };
+}) {
+  const session = await getServerSession(authOptions);
+  console.log(session);
+  // const searchParams = useSearchParams();
+  // const searchKeyword = searchParams.get("searchKeyword");
 
-    const getRecipes = async () => {
-      const response = await fetch(`/api/recipes?email=${email}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log(response);
-      if (response.ok) {
-        const recipes: RecipeDB[] = await response.json();
-        setGlobalState({
-          ...globalState,
-          recipes: recipes,
-        });
-      }
+  if (!session?.user?.email) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
     };
-    if (email) {
-      getRecipes();
-    }
-  }, [status]);
+  }
+  const email = session?.user?.email;
 
-  const filteredRecipes = globalState.recipes.filter((recipe) => {
+  const recipeData = getRecipes(email);
+  const recipes = await recipeData;
+
+  const searchKeyword = searchParams.query?.toString();
+
+  const filteredRecipes = recipes.filter((recipe) => {
     const { category, summary, title } = recipe;
-    const lowerKeyword = searchKeyword.toLowerCase();
+    const lowerKeyword =
+      typeof searchKeyword === "string" ? searchKeyword.toLowerCase() : "";
     return (
       category.toLowerCase().includes(lowerKeyword) ||
       summary.toLowerCase().includes(lowerKeyword) ||
@@ -50,22 +60,10 @@ export default function Dashboard() {
     );
   });
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  };
-
   return (
     <div className="dashboard">
-      <div className="search-bar-container">
-        <h1>Dashboard</h1>
-        <input
-          className="dashboard__search-bar"
-          type="text"
-          value={searchKeyword}
-          onChange={handleSearchChange}
-          placeholder="Search recipes..."
-        />
-      </div>
+      <DashSearchBar />
+
       {filteredRecipes.length > 0 ? (
         filteredRecipes.map((recipe) => (
           <DashRecipeCard key={recipe.id} recipe={recipe} />
@@ -76,4 +74,3 @@ export default function Dashboard() {
     </div>
   );
 }
-//

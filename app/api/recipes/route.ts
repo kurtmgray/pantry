@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
         preptime: recipe.preptime,
         cooktime: recipe.cooktime,
         rating: recipe.rating || null,
+        image: recipe.image,
       },
     });
 
@@ -32,7 +33,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  console.log("hi")
   const email = request.nextUrl.searchParams.get("email");
+  console.log("email", email);
   if (email) {
     try {
       const recipes = await prisma.recipe.findMany({
