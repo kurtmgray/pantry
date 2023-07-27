@@ -1,53 +1,39 @@
+"use client";
+
 import DashRecipeCard from "./components/DashRecipeCard";
-import DashSearchBar from "./components/DashSearchBar";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-// import { useSearchParams } from "next/navigation";
-
-export const dynamic = "force-dynamic";
-
+import DashSearchBar from "../components/SearchBar";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 type Props = {
-  recipes: (RecipeDB | RecipeGPT)[];
-};
-
-const getRecipes = async (email: string) => {
-  // Fetch recipes using the authenticated user's email
-  const url = new URL("/api/recipes", "http://localhost:3000");
-  url.searchParams.set("email", email);
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const recipes: (RecipeDB | RecipeGPT)[] = await response.json();
-  return recipes;
-};
-
-export default async function Dashboard({
-  searchParams,
-}: {
   searchParams: { [key: string]: string[] | string | undefined };
-}) {
-  const session = await getServerSession(authOptions);
-  console.log(session);
-  // const searchParams = useSearchParams();
-  // const searchKeyword = searchParams.get("searchKeyword");
+};
 
-  if (!session?.user?.email) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
+export default function Dashboard({ searchParams }: Props) {
+  const { status, data } = useSession();
+  const [recipes, setRecipes] = useState<(RecipeDB | RecipeGPT)[]>([]);
+
+  useEffect(() => {
+    const getRecipes = async () => {
+      if (status === "authenticated" && data?.user?.email) {
+        const email = data.user?.email;
+
+        const url = new URL("/api/recipes", process.env.NEXT_PUBLIC_API_ORIGIN);
+        url.searchParams.set("email", email);
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "force-cache",
+        });
+        const recipes: (RecipeDB | RecipeGPT)[] = await response.json();
+        setRecipes(recipes);
+      }
     };
-  }
-  const email = session?.user?.email;
-
-  const recipeData = getRecipes(email);
-  const recipes = await recipeData;
-
-  const searchKeyword = searchParams.query?.toString();
+    getRecipes();
+  }, [status, data]);
+  const searchKeyword = searchParams.searchKeyword?.toString() || "";
 
   const filteredRecipes = recipes.filter((recipe) => {
     const { category, summary, title } = recipe;
