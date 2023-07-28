@@ -1,13 +1,13 @@
+"use client";
 import useSearch from "@/lib/useSearch";
 import Spinner from "@/app/components/Spinner";
 // import spinnerStyles from "@/app/components/Spinner.module.css";
 
 export default function SearchBar() {
-  const { isPending, startSearch } = useSearch();
+  const { startSearch } = useSearch();
 
   const handleSearchChange = (keyword: string) => {
     startSearch(keyword);
-    console.log(isPending);
   };
 
   return (
@@ -18,13 +18,13 @@ export default function SearchBar() {
         onChange={(e) => handleSearchChange(e.target.value)}
         placeholder="Search recipes..."
       />
-      {isPending && (
+      {/* {isPending && (
         <div
           className={"dashboard__search-bar" + " " + isPending ? "loading" : ""}
         >
           <Spinner />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

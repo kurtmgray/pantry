@@ -1,7 +1,7 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
-import { createContext, useState } from "react";
+import { createContext, useState, useContext, FC } from "react";
 
 type Props = {
   children?: React.ReactNode;
@@ -11,25 +11,29 @@ export const AppSessionProvider = ({ children }: Props) => {
   return <SessionProvider>{children}</SessionProvider>;
 };
 
-type GlobalState = {
-  recipes: RecipeDB[];
-  pantry: PantryItem[] | [];
-};
-
 const InitialState: GlobalState = {
   recipes: [],
   pantry: [],
+  searchKeyword: "",
 };
 
-export const AppContext = createContext<
-  [GlobalState, (state: GlobalState) => void]
->([InitialState, () => {}]);
+const InitialContext: GlobalContextType = {
+  state: InitialState,
+  setState: () => {},
+};
 
-export const AppContextProvider: React.FC<Props> = ({ children }: Props) => {
-  const [globalState, setGlobalState] = useState<GlobalState>(InitialState);
+export const AppContext = createContext<GlobalContextType>(InitialContext);
+
+export const AppContextProvider: FC<Props> = ({ children }) => {
+  const [state, setState] = useState<GlobalState>(InitialState);
   return (
-    <AppContext.Provider value={[globalState, setGlobalState]}>
+    <AppContext.Provider value={{ state, setState }}>
       {children}
     </AppContext.Provider>
   );
+};
+
+export const useGlobalState = () => {
+  const context = useContext(AppContext);
+  return context;
 };

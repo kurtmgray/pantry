@@ -1,7 +1,7 @@
 "use client";
 import RecipeCard from "@/app/components/RecipeCard";
-import { AppContext } from "@/app/providers";
 import { useContext, useEffect, useState } from "react";
+import { useGlobalState } from "@/app/providers";
 
 type Props = {
   params: {
@@ -9,23 +9,21 @@ type Props = {
   };
 };
 export default function RecipePage({ params: { recipeId } }: Props) {
-  const [globalState, setGlobalState] = useContext(AppContext);
+  const { state, setState } = useGlobalState();
   const [recipe, setRecipe] = useState<RecipeDB | undefined>(undefined);
 
   useEffect(() => {
     const findRecipeById = (id: string) => {
-      if (globalState.recipes.length > 0) {
-        const thisRecipe = globalState.recipes.find(
-          (r) => r.id === parseInt(id)
-        );
+      if (state.recipes.length > 0) {
+        const thisRecipe = state.recipes.find((rec) => rec.id === parseInt(id));
         if (thisRecipe) {
           setRecipe(thisRecipe);
         }
       }
     };
-
+    console.log(state);
     findRecipeById(recipeId);
-  }, [recipeId, globalState.recipes]);
+  }, [recipeId, state.recipes]);
 
   return (
     <div className="recipe__card">

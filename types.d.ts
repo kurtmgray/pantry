@@ -1,3 +1,15 @@
+
+type GlobalState = {
+  recipes: RecipeDB[];
+  pantry: PantryItem[] | [];
+  searchKeyword: string
+};
+
+type GlobalContextType = {
+  state: GlobalState;
+  setState: Dispatch<SetStateAction<GlobalState>>;
+};
+
 interface CreateCompletionResponseData {
   id: string;
   object: string;
