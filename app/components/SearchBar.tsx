@@ -4,6 +4,7 @@ import styles from "./SearchBar.module.css";
 import { useGlobalState } from "@/app/providers";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { Spin } from "antd";
 
 export default function SearchBar() {
   const { startSearch, isLoading } = useSearch();
@@ -26,7 +27,10 @@ export default function SearchBar() {
         onChange={(e) => handleSearchChange(e.target.value)}
         placeholder="Search recipes..."
       />
-      {isLoading && <span className={styles.spinner}></span>}
+      {
+        isLoading && <Spin className={styles.spinner} size="small" />
+        // <span className={styles.spinner}></span>
+      }
     </div>
   );
 }

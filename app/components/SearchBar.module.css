@@ -13,18 +13,19 @@
 }
 
 .spinner {
+  
   position: absolute;
   display: block;
-  top: 15%;
+  top: 0;
   right: -4px;
-  margin: 0;
-  width: 10px;
+  margin-top: 3px;
+  /* width: 10px;
   height: 10px;
   border: 3px solid transparent;
-  border-top-color: #3498db; /* Spinner color */
+  border-top-color: #3498db; 
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  transform: translateY(-50%);
+  transform: translateY(-50%); */ 
 }
   
 @keyframes spin {
