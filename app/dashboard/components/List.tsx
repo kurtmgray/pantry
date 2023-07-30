@@ -1,7 +1,6 @@
 "use client";
 
 import DashRecipeCard from "@/app/dashboard/components/DashRecipeCard";
-import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
 
@@ -13,10 +12,6 @@ type Props = {
 
 export default function List({ recipes }: Props) {
   const { state, setState } = useGlobalState();
-  //   const searchParams = useSearchParams();
-  //   const searchKeyword = searchParams.get("searckKeyword");
-
-  //   console.log(searchParams);
 
   useEffect(() => {
     setState((state: GlobalState) => ({ ...state, recipes }));
@@ -25,7 +20,7 @@ export default function List({ recipes }: Props) {
   const filteredRecipes = recipes.filter((recipe) => {
     const { category, summary, title } = recipe;
     const lowerKeyword = state.searchKeyword.toLowerCase();
-    //   typeof searchKeyword === "string" ? searchKeyword.toLowerCase() : "";
+
     return (
       category.toLowerCase().includes(lowerKeyword) ||
       summary.toLowerCase().includes(lowerKeyword) ||

@@ -1,33 +1,28 @@
-// import { useRouter, usePathname } from "next/navigation";
-import { useTransition, useRef } from "react";
+
 import { useGlobalState } from "@/app/providers";
+import { useState, useRef } from "react";
+
+// originally written for useTransition and deduping router.replace() calls
+// subbing timeout/isLoading for useTransition
 
 export default function useSearch() {
-  // const [isPending, startTransition] = useTransition();
-  // const timeoutRef = useRef<NodeJS.Timeout>();
-  // const router = useRouter();
-  // const pathname = usePathname();
-const {setState} = useGlobalState();
+  const [isLoading, setIsLoading] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const {setState} = useGlobalState();
 
-  const startSearch = (keyword: string) => {
-    // if (timeoutRef.current) {
-    //   clearTimeout(timeoutRef.current);
-    // }
-    // timeoutRef.current = setTimeout(() => {
-    // let params = new URLSearchParams(window.location.search);
-    // if (keyword) {
-    //   params.set("searchKeyword", keyword);
-    // } else {
-    //   params.delete("searchKeyword");
-    // }
-    // startTransition(() => {
-    //     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-        
-
-    // });
-    setState((state: GlobalState) => ({...state, searchKeyword: keyword}));
-    // }, 500
-    // );
+  const startSearch = (keyword: string, network?: boolean) => {
+    if (network){
+      console.log('network search')
+      //handle network search
+    } else if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }   
+    setIsLoading(true);
+    const timeout = setTimeout(() => {  
+      setState((state: GlobalState) => ({...state, searchKeyword: keyword}));
+      setIsLoading(false);
+    }, 1000);
+    timeoutRef.current = timeout;
   };
-  return  {startSearch };
+  return  { startSearch, isLoading };
 }

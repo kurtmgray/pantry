@@ -2,6 +2,7 @@ import DashSearchBar from "../components/SearchBar";
 import List from "./components/List";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import styles from "./Dashboard.module.css";
 
 // export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default async function Dashboard() {
   const recipes = await recipeData;
 
   return (
-    <div className="dashboard">
+    <div className={styles.dashboard}>
       <DashSearchBar />
       <List recipes={recipes} />
     </div>

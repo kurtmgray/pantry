@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Spinner.module.css";
+import styles from "./SearchBar.module.css";
 
 export default function Spinners() {
   return (
