@@ -1,11 +1,14 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useState, useContext } from "react";
-import { getRecipe } from "@/lib/getRecipe";
-import { AppContext } from "@/app/providers";
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { getNewRecipe } from "@/lib/getNewRecipe";
+import { useGlobalState } from "@/app/providers";
 import RecipeCard from "@/app/components/RecipeCard";
+import PromptParamsDisplay from "./PromptParamsDisplay";
+import IngredientsList from "./IngredientSearch";
+import OptionsList from "./OptionsList";
 import parseRecipeString from "@/lib/parseResponseString";
-import { fetchPantryItems } from "@/lib/getPantryItems";
 
+// TODO styles
 const optionStyles = {
   display: "flex",
   justifyContent: "space-between",
@@ -17,16 +20,19 @@ type Props = {
   options: MenuOptions;
 };
 
+const initPromptParamsState: PromptParams = {
+  selectedIngredients: [],
+  allergies: [],
+  cuisines: [],
+  dietaryPreferences: [],
+  maxPrepTime: "",
+  difficulty: "",
+};
+
 export default function RecipeSearch({ ingredients, options }: Props) {
   const { cuisines, dietaryPreferences } = options;
-  const initPromptParamsState: PromptParams = {
-    selectedIngredients: [],
-    allergies: [],
-    cuisines: [],
-    dietaryPreferences: [],
-    maxPrepTime: "",
-    difficulty: "",
-  };
+
+  // TODO case for useSearch?
   const [searchTerm, setSearchTerm] = useState("");
   const [newAllergy, setNewAllergy] = useState("");
   const [promptParams, setPromptParams] = useState<PromptParams>(
@@ -35,11 +41,6 @@ export default function RecipeSearch({ ingredients, options }: Props) {
   const [recipeResponse, setRecipeResponse] = useState<
     CreateCompletionResponse[]
   >([]);
-  const [globalState, setGlobalState] = useContext(AppContext);
-
-  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
@@ -76,7 +77,7 @@ export default function RecipeSearch({ ingredients, options }: Props) {
   };
 
   const handleGetRecipe = async () => {
-    const data = await getRecipe(promptParams, 1);
+    const data = await getNewRecipe(promptParams, 1);
     if (data.statusCode === 200) {
       setRecipeResponse(data.body!);
     }
@@ -96,58 +97,17 @@ export default function RecipeSearch({ ingredients, options }: Props) {
       <button onClick={handleGetRecipe}>Get Recipe</button>
       <h2>Selected Items:</h2>
       <div style={optionStyles}>
-        <div>
-          <h3>Ingredients:</h3>
-          <ul>
-            {promptParams.selectedIngredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Cuisines:</h3>
-          <ul>
-            {promptParams.cuisines.map((cuisine, index) => (
-              <li key={index}>{cuisine}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3>Dietary Preferences:</h3>
-          <ul>
-            {promptParams.dietaryPreferences.map((dietaryPreference, index) => (
-              <li key={index}>{dietaryPreference}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3>Allergies:</h3>
-          <ul>
-            {promptParams.allergies.map((allergy, index) => (
-              <li key={index}>{allergy}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3>Difficulty:</h3>
-          {promptParams.difficulty === "" ? null : (
-            <ul>
-              {" "}
-              <li>{promptParams.difficulty}</li>{" "}
-            </ul>
-          )}
-        </div>
+        {Object.values(promptParams).map((param, index) => (
+          <PromptParamsDisplay
+            key={index}
+            // TODO: is this guaranteed to order correctly?
+            // write a fn to parse the names, or rename
+            title={Object.keys(promptParams)[index]}
+            selectedOptions={param}
+          />
+        ))}
       </div>
 
-      <input
-        type="text"
-        placeholder="Search pantry"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
       <form onSubmit={handleAddAllergies}>
         <input
           type="text"
@@ -185,70 +145,23 @@ export default function RecipeSearch({ ingredients, options }: Props) {
         ))}
       </select>
       <div style={optionStyles}>
-        <div>
-          <h2>Ingredients:</h2>
-          <ul>
-            {ingredients
-              .filter((ingredient) =>
-                ingredient.knownAs
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              )
-              .slice(0, 20)
-              .map((ingredient) => (
-                <li key={ingredient.id}>
-                  <input
-                    type="checkbox"
-                    name="selectedIngredients"
-                    value={ingredient.knownAs}
-                    checked={promptParams.selectedIngredients.some(
-                      (selected) => selected === ingredient.knownAs
-                    )}
-                    onChange={handleCheckboxChange}
-                  />
-                  {ingredient.knownAs}
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div>
-          <h2>Cuisine</h2>
-          <ul>
-            {cuisines.map((cuisine, index) => (
-              <li key={index}>
-                <input
-                  type="checkbox"
-                  name="cuisines"
-                  value={cuisine}
-                  checked={promptParams.cuisines.includes(cuisine)}
-                  onChange={handleCheckboxChange}
-                />
-                {cuisine}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h2>Dietary Preferences</h2>
-          <ul>
-            {dietaryPreferences.map((preference, index) => (
-              <li key={index}>
-                <input
-                  type="checkbox"
-                  name="dietaryPreferences"
-                  value={preference}
-                  checked={promptParams.dietaryPreferences.includes(preference)}
-                  onChange={handleCheckboxChange}
-                />
-                {preference}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <IngredientsList
+          handleCheckboxChange={handleCheckboxChange}
+          promptParams={promptParams}
+        />
+        <OptionsList
+          title={"Cuisine"}
+          options={cuisines}
+          handleCheckboxChange={handleCheckboxChange}
+          promptParams={promptParams}
+        />
+        <OptionsList
+          title={"Dietary Preferences"}
+          options={dietaryPreferences}
+          handleCheckboxChange={handleCheckboxChange}
+          promptParams={promptParams}
+        />
       </div>
-      <pre>{JSON.stringify(recipeResponse, null, 4)}</pre>
-      {/* {globalState} */}
     </div>
   );
 }

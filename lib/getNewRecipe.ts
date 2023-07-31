@@ -14,7 +14,7 @@ delete configuration.baseOptions.headers["User-Agent"];
 
 const openai = new OpenAIApi(configuration);
 
-export const getRecipe = async (
+export const getNewRecipe = async (
   promptParams: PromptParams,
   numChoices: number
 ): Promise<APIResponse> => {
@@ -78,51 +78,20 @@ async function generateRecipe(
   prompt: string,
   numChoices: number
 ): CreateCompletionResponse {
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: prompt,
-    max_tokens: 1024,
-    temperature: 0.7,
-    n: numChoices,
-  });
-  console.log(response);
-  // const data = JSON.stringify({
-  //   model: "text-davinci-003",
-  //   prompt: prompt,
-  //   max_tokens: 1024,
-  //   temperature: 0.7,
-  //   n: numChoices,
-  // });
-
-  // const options = {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${getApiKey()}`,
-  //   },
-  //   body: data,
-  // };
-  return response.data;
-  // new Promise((resolve, reject) => {
-  //   fetch("https://api.openai.com/v1/completions", options)
-  //     .then((response) => {
-  //       console.log(response);
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       if (data.choices && data.choices.length > 0) {
-  //         console.log(data);
-  //         resolve(data);
-  //       } else {
-  //         console.log(data);
-  //         reject("Error generating lesson plan");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       reject(error);
-  //     });
-  // });
+  try {
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      max_tokens: 1024,
+      temperature: 0.7,
+      n: numChoices,
+    });
+    if (response)return response.data;
+    else {
+      throw new Error("Error generating recipe.")
+    }
+  } catch (err) {
+    console.log("Error generating recipe: ", err)
+  }
+ 
 }

@@ -1,40 +1,40 @@
+"use client";
 import React, { useEffect, Dispatch, SetStateAction } from "react";
-import { fetchPantryItems } from "@/lib/getPantryItems";
+import { fetchPantryItems } from "@/lib/fetchPantryItems";
 import PantryItemCard from "./PantryItemCard";
+import { useGlobalState } from "@/app/providers";
 
 type Props = {
   listStyles: { [key: string]: string };
-  pantryItems: PantryItem[];
-  setPantryItems: Dispatch<SetStateAction<PantryItem[]>>;
 };
 
-export default function PantryList({
-  listStyles,
-  pantryItems,
-  setPantryItems,
-}: Props) {
+export default function PantryList({ listStyles }: Props) {
+  const { state, setState } = useGlobalState();
+
   useEffect(() => {
     const updatePantryItems: PantryItemsCallback = (data) => {
-      setPantryItems(data);
+      setState((state: GlobalState) => {
+        return { ...state, pantry: data };
+      });
     };
     fetchPantryItems(updatePantryItems);
-  }, [setPantryItems]);
+  }, [setState]);
 
   return (
     <div className={listStyles.currentPantry}>
       <h2>Pantry List</h2>
-      {pantryItems.length === 0 ? (
+      {state.pantry.length === 0 ? (
         <p>No items in the pantry</p>
       ) : (
         <div className={listStyles.pantryItem_container}>
-          {[...pantryItems]
+          {[...state.pantry]
             .sort((a, b) => a.label.localeCompare(b.label))
             .map((item) => (
               <PantryItemCard
                 key={item.id}
                 itemStyles={listStyles}
                 pantryItem={item}
-                setPantryItems={setPantryItems}
+                setState={setState}
               />
             ))}
         </div>

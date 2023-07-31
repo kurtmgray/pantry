@@ -6,13 +6,13 @@ import Image from "next/image";
 type Props = {
   pantryItem: PantryItem;
   itemStyles: { [key: string]: string };
-  setPantryItems: Dispatch<SetStateAction<PantryItem[]>>;
+  setState: Dispatch<SetStateAction<GlobalState>>;
 };
 
 export default function PantryItemCard({
   pantryItem,
   itemStyles,
-  setPantryItems,
+  setState,
 }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -34,9 +34,11 @@ export default function PantryItemCard({
         method: "DELETE",
       });
       if (response.ok) {
-        // Handle successful deletion, e.g., update state or fetch updated pantry items
-        setPantryItems((prevPantryItems) => {
-          return prevPantryItems.filter((item) => item.id !== pantryItem.id);
+        setState((state: GlobalState) => {
+          return {
+            ...state,
+            pantry: state.pantry.filter((item) => item.id !== pantryItem.id),
+          };
         });
         console.log("Item deleted successfully.");
       } else {
@@ -58,6 +60,7 @@ export default function PantryItemCard({
     >
       <h3>{pantryItem.label}</h3>
       <Image
+        className={itemStyles.pantryItemImage}
         src={pantryItem.image}
         height={100}
         width={100}

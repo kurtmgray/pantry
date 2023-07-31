@@ -5,7 +5,7 @@ import { MouseEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "@/lib/types";
-import { generateRecipeImage } from "@/lib/getRecipe";
+import { generateRecipeImage } from "@/lib/getNewRecipe";
 import Image from "next/image";
 
 type Props = {

@@ -3,6 +3,8 @@ export const fetchPantryItems = async (callback: PantryItemsCallback) => {
     const response = await fetch("/api/pantry");
     if (response.ok) {
       const data = await response.json();
+      
+      //TODO: unify this approach
       callback(data);
     } else {
       throw new Error("Failed to fetch pantry items");

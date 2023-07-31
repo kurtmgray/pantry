@@ -1,17 +1,17 @@
-import { useState, MouseEvent, ChangeEvent, FormEvent, useEffect } from "react";
+"use client";
+import { useState, MouseEvent, ChangeEvent, FormEvent } from "react";
+import { useGlobalState } from "@/app/providers";
 import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
 import { categories } from "@/lib/getIngredientsByCategory";
 import IngredientCard from "./IngredientCard";
 
-type FormComponentProps = {
+type Props = {
   formStyles: { [key: string]: string };
-  addPantryItem: (ingredientFromEdamam: EdamamIngredient) => void;
 };
 
-export default function AddIngredientForm({
-  formStyles,
-  addPantryItem,
-}: FormComponentProps) {
+export default function AddIngredientForm({ formStyles }: Props) {
+  const { setState } = useGlobalState();
+
   const [ingredientSearch, setIngredientSearch] = useState({
     name: "",
     brand: "",
@@ -20,6 +20,20 @@ export default function AddIngredientForm({
     EdamamIngredient[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const addPantryItem = async (ingredientFromEdamam: EdamamIngredient) => {
+    const response = await fetch(`/api/ingredients`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ingredientFromEdamam),
+    });
+    const addedItem = await response.json();
+    setState((state: GlobalState) => {
+      return { ...state, pantry: [...state.pantry, addedItem] };
+    });
+  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
