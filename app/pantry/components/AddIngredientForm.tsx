@@ -1,8 +1,6 @@
 "use client";
 import { useState, MouseEvent, ChangeEvent, FormEvent } from "react";
 import { useGlobalState } from "@/app/providers";
-import getIngredientsByCategory from "@/lib/getIngredientsByCategory";
-import { categories } from "@/lib/getIngredientsByCategory";
 import IngredientCard from "./IngredientCard";
 
 type Props = {
@@ -84,14 +82,8 @@ export default function AddIngredientForm({ formStyles }: Props) {
     setIsLoading(false);
   };
 
-  const handleCreatePantryItem = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log(e.currentTarget.id);
-    const ingredientToAdd = ingredientsFromEdamam.find(
-      (ingr) => ingr.food.foodId === e.currentTarget.id
-    );
-    console.log(ingredientToAdd);
-    ingredientToAdd && addPantryItem(ingredientToAdd);
+  const handleCreatePantryItem = async (ingredient: EdamamIngredient) => {
+    addPantryItem(ingredient);
     setIngredientsFromEdamam([]);
   };
 
@@ -120,9 +112,11 @@ export default function AddIngredientForm({ formStyles }: Props) {
             <button type="submit">Submit</button>
           </form>
         )}
-        <button onClick={() => setIngredientsFromEdamam([])}>
-          Clear Search Results
-        </button>
+        {ingredientsFromEdamam.length > 0 && (
+          <button onClick={() => setIngredientsFromEdamam([])}>
+            Clear Search Results
+          </button>
+        )}
       </div>
       <div className={formStyles.ingredients}>
         {ingredientsFromEdamam &&
