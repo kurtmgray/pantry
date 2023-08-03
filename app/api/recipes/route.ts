@@ -1,6 +1,9 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { RecipeCategory } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { CustomSession } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const recipe: RecipeDB = await request.json();
@@ -33,14 +36,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  console.log("hi")
-  const email = request.nextUrl.searchParams.get("email");
-  console.log("email", email);
-  if (email) {
+  const session: CustomSession | null = await getServerSession(authOptions);
+
+  if (session) {
     try {
       const recipes = await prisma.recipe.findMany({
         where: {
-          addedBy: { email },
+          addedBy: {id: parseInt(session.user.id)} ,
         },
       });
       return NextResponse.json(recipes);
@@ -50,5 +52,7 @@ export async function GET(request: NextRequest) {
       await prisma.$disconnect();
       console.log("Disconnected from Prisma.");
     }
+  } else {
+    return new Response(null, { status: 401, statusText: "Unauthorized" });
   }
 }

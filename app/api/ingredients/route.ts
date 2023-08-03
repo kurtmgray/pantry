@@ -25,12 +25,15 @@ export async function GET(request: NextRequest) {
       await prisma.$disconnect();
       console.log("Disconnected from Prisma.");
     }
+  } else {
+    console.error("No ingredient provided.");
   }
 }
 
 export async function POST(request: NextRequest) {
   const data: EdamamIngredient = await request.json();
   const session: CustomSession | null = await getServerSession(authOptions);
+  
   if (data.food.foodId !== undefined) {
     const {
       food: {
@@ -43,6 +46,7 @@ export async function POST(request: NextRequest) {
         nutrients: { ENERC_KCAL, PROCNT, FAT, CHOCDF },
       },
     } = data;
+
     if (session) {
       try {
         const pantryItem = await prisma.pantryItem.create({
@@ -73,16 +77,16 @@ export async function POST(request: NextRequest) {
         await prisma.$disconnect();
       }
     } else {
-      console.error("No session available");
-      // Handle no session available
+      return new Response(null, { status: 401, statusText: "Unauthorized" });
     }
+  } else {
+    console.error("Error creating PantryItem: foodId is undefined");
   }
 }
 
 export async function DELETE(request: NextRequest) {
   const ingredientId = request.nextUrl.searchParams.get("id");
   const session: CustomSession | null = await getServerSession(authOptions);
-  console.log("85", ingredientId)
 
   if (session) {
     try {
@@ -101,5 +105,7 @@ export async function DELETE(request: NextRequest) {
     } finally {
       await prisma.$disconnect();
     }
+  } else {
+    return new Response(null, { status: 401, statusText: "Unauthorized" });
   }
 }

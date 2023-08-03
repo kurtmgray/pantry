@@ -1,14 +1,15 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import { usePantryItems } from "@/lib/usePantryItems";
 import { getNewRecipe } from "@/lib/getNewRecipe";
-import { useGlobalState } from "@/app/providers";
 import RecipeCard from "@/app/components/RecipeCard";
 import PromptParamsDisplay from "./PromptParamsDisplay";
-import IngredientsList from "./IngredientSearch";
+import IngredientsList from "./SearchableIngredientList";
 import OptionsList from "./OptionsList";
+import SelectInput from "./SelectInput";
 import parseRecipeString from "@/lib/parseResponseString";
 
-// TODO styles
+// TODO: styles
 const optionStyles = {
   display: "flex",
   justifyContent: "space-between",
@@ -16,7 +17,6 @@ const optionStyles = {
 };
 
 type Props = {
-  ingredients: PantryItem[];
   options: MenuOptions;
 };
 
@@ -29,7 +29,7 @@ const initPromptParamsState: PromptParams = {
   difficulty: "",
 };
 
-export default function RecipeSearch({ ingredients, options }: Props) {
+export default function RecipeSearch({ options }: Props) {
   const { cuisines, dietaryPreferences } = options;
 
   // TODO case for useSearch?
@@ -97,15 +97,18 @@ export default function RecipeSearch({ ingredients, options }: Props) {
       <button onClick={handleGetRecipe}>Get Recipe</button>
       <h2>Selected Items:</h2>
       <div style={optionStyles}>
-        {Object.values(promptParams).map((param, index) => (
-          <PromptParamsDisplay
-            key={index}
-            // TODO: is this guaranteed to order correctly?
-            // write a fn to parse the names, or rename
-            title={Object.keys(promptParams)[index]}
-            selectedOptions={param}
-          />
-        ))}
+        {Object.keys(promptParams)
+          .sort()
+          .map((key, index) => (
+            <PromptParamsDisplay
+              key={index}
+              title={key}
+              selectedOptions={
+                // works, but a bit hacky
+                (promptParams as { [key: string]: string | string[] })[key]
+              }
+            />
+          ))}
       </div>
 
       <form onSubmit={handleAddAllergies}>
@@ -119,31 +122,22 @@ export default function RecipeSearch({ ingredients, options }: Props) {
         <button type="submit">Submit</button>
       </form>
 
-      <select
+      <SelectInput
+        options={options.difficulty}
         value={promptParams.difficulty}
+        onChange={handleSelectChange}
         name="difficulty"
-        onChange={handleSelectChange}
-      >
-        <option value="">Select Difficulty</option>
-        {options.difficulty.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        placeholder="Select Difficulty"
+      />
 
-      <select
-        value={promptParams.maxPrepTime}
-        name="maxPrepTime"
+      <SelectInput
+        options={options.maxPrepTimeOptions}
+        value={promptParams.difficulty}
         onChange={handleSelectChange}
-      >
-        <option value="">Select Max Prep Time</option>
-        {options.maxPrepTimeOptions.map((option, index) => (
-          <option key={index} value={option}>
-            {option} min.
-          </option>
-        ))}
-      </select>
+        name="maxPrepTime"
+        placeholder="Set Max Prep Time"
+      />
+
       <div style={optionStyles}>
         <IngredientsList
           handleCheckboxChange={handleCheckboxChange}

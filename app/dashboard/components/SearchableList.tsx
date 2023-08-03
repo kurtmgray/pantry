@@ -1,7 +1,8 @@
 "use client";
 
 import DashRecipeCard from "@/app/dashboard/components/DashRecipeCard";
-import { useEffect } from "react";
+import LocalSearchBar from "@/app/components/LocalSearchBar";
+import { useState, useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
 
 import React from "react";
@@ -10,16 +11,16 @@ type Props = {
   recipes: RecipeDB[];
 };
 
-export default function List({ recipes }: Props) {
-  const { state, setState } = useGlobalState();
+export default function SearchableList({ recipes }: Props) {
+  const [keyword, setKeyword] = useState("");
 
-  useEffect(() => {
-    setState((state: GlobalState) => ({ ...state, recipes }));
-  }, [recipes, setState]);
+  const handleInputChange = (newKeyword: string) => {
+    setKeyword(newKeyword);
+  };
 
   const filteredRecipes = recipes.filter((recipe) => {
     const { category, summary, title } = recipe;
-    const lowerKeyword = state.searchKeyword.toLowerCase();
+    const lowerKeyword = keyword.toLowerCase();
 
     return (
       category.toLowerCase().includes(lowerKeyword) ||
@@ -30,6 +31,8 @@ export default function List({ recipes }: Props) {
 
   return (
     <div>
+      <LocalSearchBar searchArea="recipes" handleChange={handleInputChange} />
+
       {filteredRecipes.length > 0 ? (
         filteredRecipes.map((recipe) => (
           <DashRecipeCard key={recipe.id} recipe={recipe} />

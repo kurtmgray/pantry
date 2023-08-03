@@ -9,7 +9,10 @@ type Props = {
 };
 
 export default function PantryList({ listStyles }: Props) {
-  const { state, setState } = useGlobalState();
+  const {
+    state: { pantry },
+    setState,
+  } = useGlobalState();
   const { pantryItems, isLoading } = usePantryItems(); // fetch pantry items
 
   useEffect(() => {
@@ -23,11 +26,11 @@ export default function PantryList({ listStyles }: Props) {
       <h2>Pantry List</h2>
       {isLoading ? (
         <p>Loading...</p>
-      ) : state.pantry.length === 0 ? (
+      ) : pantry.length === 0 ? (
         <p>No items in the pantry</p>
       ) : (
         <div className={listStyles.pantryItem_container}>
-          {[...state.pantry]
+          {[...pantry]
             .sort((a, b) => a.label.localeCompare(b.label))
             .map((item) => (
               <PantryItemCard

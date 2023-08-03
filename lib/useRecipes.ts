@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchRecipes } from "@/lib/fetchRecipes";
 
-export function usePantryItems() {
+export function useRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
