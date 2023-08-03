@@ -1,4 +1,5 @@
 import React, { useState, MouseEvent, Dispatch, SetStateAction } from "react";
+import { useGlobalState } from "@/app/providers";
 import Image from "next/image";
 
 // add nutrition to ingredient schema
@@ -6,16 +7,12 @@ import Image from "next/image";
 type Props = {
   pantryItem: PantryItem;
   itemStyles: { [key: string]: string };
-  setState: Dispatch<SetStateAction<GlobalState>>;
 };
 
-export default function PantryItemCard({
-  pantryItem,
-  itemStyles,
-  setState,
-}: Props) {
+export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { setState } = useGlobalState();
 
   const handleMouseClick = (event: MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = event;
@@ -42,7 +39,7 @@ export default function PantryItemCard({
         });
         console.log("Item deleted successfully.");
       } else {
-        console.error("Failed to delete item.");
+        console.error("Failed to delete item: ", response);
       }
     } catch (error) {
       console.error("Error while deleting item:", error);

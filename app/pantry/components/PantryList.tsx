@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, Dispatch, SetStateAction } from "react";
-import { fetchPantryItems } from "@/lib/fetchPantryItems";
 import PantryItemCard from "./PantryItemCard";
 import { useGlobalState } from "@/app/providers";
+import { usePantryItems } from "@/lib/usePantryItems";
 
 type Props = {
   listStyles: { [key: string]: string };
@@ -10,20 +10,20 @@ type Props = {
 
 export default function PantryList({ listStyles }: Props) {
   const { state, setState } = useGlobalState();
+  const { pantryItems, isLoading } = usePantryItems(); // fetch pantry items
 
   useEffect(() => {
-    const updatePantryItems: PantryItemsCallback = (data) => {
-      setState((state: GlobalState) => {
-        return { ...state, pantry: data };
-      });
-    };
-    fetchPantryItems(updatePantryItems);
-  }, [setState]);
+    setState((state: GlobalState) => {
+      return { ...state, pantry: pantryItems };
+    });
+  }, [pantryItems, setState]);
 
   return (
     <div className={listStyles.currentPantry}>
       <h2>Pantry List</h2>
-      {state.pantry.length === 0 ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : state.pantry.length === 0 ? (
         <p>No items in the pantry</p>
       ) : (
         <div className={listStyles.pantryItem_container}>
@@ -34,7 +34,6 @@ export default function PantryList({ listStyles }: Props) {
                 key={item.id}
                 itemStyles={listStyles}
                 pantryItem={item}
-                setState={setState}
               />
             ))}
         </div>
