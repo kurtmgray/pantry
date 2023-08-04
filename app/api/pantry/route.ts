@@ -5,15 +5,13 @@ import { CustomSession } from "@/lib/types";
 import { prisma, getPantryItemsByUserId, deletePantryItem, postNewPantryItem } from "@/lib/prisma";
 
 
-// serversession returning nothing... :(
 export async function GET(request: NextRequest) {
-  const session: CustomSession | null = await getServerSession(authOptions);
-  console.log("9",session)
-  if (session) {
+  const userId = request.nextUrl.searchParams.get("id");
+  if (userId) {
     try {
-      const userId = parseInt(session.user.id);
+      // const userId = parseInt(session.user.id);
       console.log("userId", userId);  
-      const pantryItems = await getPantryItemsByUserId(userId);
+      const pantryItems = await getPantryItemsByUserId(parseInt(userId));
       return NextResponse.json(pantryItems);
     } catch (error) {
       return NextResponse.error();
@@ -22,7 +20,7 @@ export async function GET(request: NextRequest) {
       console.log("Disconnected from Prisma.");
     }
   } else {
-    return new Response(null, { status: 401, statusText: "boob" });
+    return new Response(null, { status: 401, statusText: "No user id." });
   }
 }
 

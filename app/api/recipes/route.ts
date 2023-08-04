@@ -20,19 +20,17 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const session: CustomSession | null = await getServerSession(authOptions);
-
-  if (session) {
+  const userId = request.nextUrl.searchParams.get("id");
+  if (userId) {    
     try {
-      const userId = parseInt(session.user.id);
-      const recipes = await getRecipesById(userId);
-      return NextResponse.json(recipes);
-    } catch (error) {
-      return NextResponse.error();
-    } finally {
-      await prisma.$disconnect();
-      console.log("Disconnected from Prisma.");
-    }
+        const recipes = await getRecipesById(parseInt(userId));
+        return NextResponse.json(recipes);
+      } catch (error) {
+        return NextResponse.error();
+      } finally {
+        await prisma.$disconnect();
+        console.log("Disconnected from Prisma.");
+      }
   } else {
     return new Response(null, { status: 401, statusText: "Unauthorized" });
   }

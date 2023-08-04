@@ -1,14 +1,15 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
+import { CustomSession } from "./types";
 
 export const fetchRecipes = async () => {
-    const session = await getServerSession(authOptions);
-    const email = session?.user?.email;
-    if (email) {
+    const session: CustomSession | null = await getServerSession(authOptions);
+    const id = session?.user?.id;
+    if (id) {
         try {
             const url = new URL("/api/recipes", process.env.NEXT_PUBLIC_API_ORIGIN);
-            url.searchParams.set("email", email);
+            url.searchParams.set("id", id);
             const response = await fetch(url, {
                 method: "GET",
                 headers: {
@@ -16,7 +17,6 @@ export const fetchRecipes = async () => {
                 },
                 cache: "force-cache",
               });
-          console.log(response.status, response.statusText); // Add this line
     
           if (response.ok) {
             const data = await response.json();
