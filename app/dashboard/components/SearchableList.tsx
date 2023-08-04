@@ -2,8 +2,7 @@
 
 import DashRecipeCard from "@/app/dashboard/components/DashRecipeCard";
 import LocalSearchBar from "@/app/components/LocalSearchBar";
-import { useState, useEffect } from "react";
-import { useGlobalState } from "@/app/providers";
+import { useState } from "react";
 
 import React from "react";
 
