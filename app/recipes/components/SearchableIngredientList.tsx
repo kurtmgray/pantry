@@ -15,13 +15,15 @@ export default function SearchableIngredientsList({
     state: { pantry },
     setState,
   } = useGlobalState();
-  const { pantryItems, isLoading } = usePantryItems();
+
+  const { pantryItems, isLoading, error } = usePantryItems();
 
   useEffect(() => {
+    console.log(pantryItems, error);
     setState((state: GlobalState) => {
       return { ...state, pantry: pantryItems };
     });
-  }, [pantryItems, setState]);
+  }, [pantryItems, error, setState]);
 
   return (
     <div>
@@ -32,6 +34,7 @@ export default function SearchableIngredientsList({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+
       <div>
         <h2>Ingredients:</h2>
         <ul>

@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRecipesById, postNewRecipe, prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
-import { CustomSession } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   const recipe: RecipeDB = await request.json();

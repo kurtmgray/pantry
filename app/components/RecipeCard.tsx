@@ -34,6 +34,7 @@ export default function RecipeCard({
     : (recipeData = recipe as RecipeGPT);
 
   useEffect(() => {
+    console.log(recipe);
     if (isDBRecipe) {
       setRecipeStatus(null);
     } else {

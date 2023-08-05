@@ -1,7 +1,8 @@
 "use client";
 import RecipeCard from "@/app/components/RecipeCard";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalState } from "@/app/providers";
+import { fetchRecipes } from "@/lib/fetchRecipes";
 
 type Props = {
   params: {
@@ -13,7 +14,7 @@ export default function RecipePage({ params: { recipeId } }: Props) {
   const [recipe, setRecipe] = useState<RecipeDB | undefined>(undefined);
 
   useEffect(() => {
-    const findRecipeById = (id: string) => {
+    const findRecipeById = async (id: string) => {
       if (state.recipes.length > 0) {
         const thisRecipe = state.recipes.find((rec) => rec.id === parseInt(id));
         if (thisRecipe) {
@@ -21,7 +22,6 @@ export default function RecipePage({ params: { recipeId } }: Props) {
         }
       }
     };
-    console.log(state);
     findRecipeById(recipeId);
   }, [recipeId, state.recipes]);
 

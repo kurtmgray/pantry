@@ -7,7 +7,7 @@ export default async function Dashboard() {
   const recipes = await recipeData;
   return (
     <div className={styles.dashboard}>
-      <SearchableList recipes={recipes} />
+      <SearchableList initialRecipes={recipes} />
     </div>
   );
 }

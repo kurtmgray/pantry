@@ -2,22 +2,30 @@
 
 import DashRecipeCard from "@/app/dashboard/components/DashRecipeCard";
 import LocalSearchBar from "@/app/components/LocalSearchBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useGlobalState } from "@/app/providers";
 
 import React from "react";
 
 type Props = {
-  recipes: RecipeDB[];
+  initialRecipes: RecipeDB[];
 };
 
-export default function SearchableList({ recipes }: Props) {
+export default function SearchableList({ initialRecipes }: Props) {
   const [keyword, setKeyword] = useState("");
+  const { state, setState } = useGlobalState();
+
+  useEffect(() => {
+    setState((state: GlobalState) => {
+      return { ...state, recipes: initialRecipes };
+    });
+  }, [initialRecipes, setState]);
 
   const handleInputChange = (newKeyword: string) => {
     setKeyword(newKeyword);
   };
 
-  const filteredRecipes = recipes.filter((recipe) => {
+  const filteredRecipes = initialRecipes.filter((recipe) => {
     const { category, summary, title } = recipe;
     const lowerKeyword = keyword.toLowerCase();
 

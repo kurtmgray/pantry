@@ -1,13 +1,12 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { usePantryItems } from "@/lib/usePantryItems";
 import { getNewRecipe } from "@/lib/getNewRecipe";
 import RecipeCard from "@/app/components/RecipeCard";
 import PromptParamsDisplay from "./PromptParamsDisplay";
-import IngredientsList from "./SearchableIngredientList";
 import OptionsList from "./OptionsList";
 import SelectInput from "./SelectInput";
 import parseRecipeString from "@/lib/parseResponseString";
+import SearchableIngredientsList from "./SearchableIngredientList";
 
 // TODO: styles
 const optionStyles = {
@@ -139,7 +138,7 @@ export default function RecipeSearch({ options }: Props) {
       />
 
       <div style={optionStyles}>
-        <IngredientsList
+        <SearchableIngredientsList
           handleCheckboxChange={handleCheckboxChange}
           promptParams={promptParams}
         />

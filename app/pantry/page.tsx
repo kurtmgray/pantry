@@ -1,10 +1,10 @@
-import { fetchPantryItems } from "@/lib/fetchPantryItems";
+import { fetchPantryItemsServer } from "@/lib/fetchPantryItemsServerSide";
 import styles from "./Pantry.module.css";
 import AddIngredientForm from "./components/AddIngredientForm";
 import PantryList from "./components/PantryList";
 
 export default async function Pantry() {
-  const pantryData = fetchPantryItems();
+  const pantryData = fetchPantryItemsServer();
   const pantry = await pantryData;
 
   return (
