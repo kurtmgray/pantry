@@ -1,0 +1,109 @@
+/* Page styles */
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  /* RecipeSearch styles */
+  .recipeSearch {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .recipeSearch h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .recipeSearch button {
+    padding: 10px 20px;
+    margin: 20px 0;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .recipeSearch form {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .recipeSearch form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .recipeSearch form button {
+    margin-left: 10px;
+  }
+  
+  /* SelectInput styles */
+  .selectInput {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* OptionsList styles */
+  .optionsList {
+    margin-bottom: 20px;
+  }
+  
+  .optionsList h2 {
+    font-size: 1.3em;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .optionsList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .optionsList li input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  /* SearchableIngredientsList styles */
+  .searchableIngredientsList {
+    margin-bottom: 20px;
+  }
+  
+  .searchableIngredientsList input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .searchableIngredientsList ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .searchableIngredientsList li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .searchableIngredientsList li input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  

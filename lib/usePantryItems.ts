@@ -10,11 +10,10 @@ export function usePantryItems() {
 
   useEffect(() => {    
     const fetchItems = async () => {
-      if (session) {
-        console.log()
+      if (session.status === "authenticated") {
         try {
-          // TODO: figure out this id issue
-          const userId = session?.data?.user?.id;
+          // hacky but works for now
+          const userId = (session.data.user as { id: string }).id;
           const data = await fetchPantryItemsClient(userId);
           setPantryItems(data);
           setIsLoading(false);

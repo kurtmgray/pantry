@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
 import { usePantryItems } from "@/lib/usePantryItems";
+import styles from "../Recipes.module.css";
 
 type Props = {
   handleCheckboxChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -26,7 +27,7 @@ export default function SearchableIngredientsList({
   }, [pantryItems, error, setState]);
 
   return (
-    <div>
+    <div className={styles.SearchableIngredientsList}>
       {/* TODO: use searchbar here? */}
       <input
         type="text"

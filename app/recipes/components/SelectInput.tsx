@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../Recipes.module.css";
 
 type Props = {
   options: string[] | number[];
@@ -17,7 +18,12 @@ export default function SelectInput({
 }: Props) {
   console.log(options);
   return (
-    <select value={value} name={name} onChange={onChange}>
+    <select
+      className={styles.selectInput}
+      value={value}
+      name={name}
+      onChange={onChange}
+    >
       <option value="">{placeholder}</option>
       {options.map((option, index) => (
         <option key={index} value={option}>

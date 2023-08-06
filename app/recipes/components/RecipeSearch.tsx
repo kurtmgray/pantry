@@ -7,6 +7,7 @@ import OptionsList from "./OptionsList";
 import SelectInput from "./SelectInput";
 import parseRecipeString from "@/lib/parseResponseString";
 import SearchableIngredientsList from "./SearchableIngredientList";
+import styles from "../Recipes.module.css";
 
 // TODO: styles
 const optionStyles = {
@@ -83,7 +84,7 @@ export default function RecipeSearch({ options }: Props) {
   };
 
   return (
-    <div>
+    <div className={styles.recipeSearch}>
       <div>
         {recipeResponse.length > 0 &&
           recipeResponse.map((recipe) => {

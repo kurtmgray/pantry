@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import styles from "../Recipes.module.css";
 
 type Props = {
   title: string;
@@ -13,7 +14,7 @@ export default function OptionsList({
   promptParams,
 }: Props) {
   return (
-    <div>
+    <div className={styles.optionsList}>
       <h2>{title}</h2>
       <ul>
         {options.map((option, index) => (
