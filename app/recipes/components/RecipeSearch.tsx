@@ -25,15 +25,13 @@ const initPromptParamsState: PromptParams = {
   allergies: [],
   cuisines: [],
   dietaryPreferences: [],
-  maxPrepTime: "",
-  difficulty: "",
+  maxPrepTime: [],
+  difficulty: [],
 };
 
 export default function RecipeSearch({ options }: Props) {
   const { cuisines, dietaryPreferences } = options;
 
-  // TODO case for useSearch?
-  const [searchTerm, setSearchTerm] = useState("");
   const [newAllergy, setNewAllergy] = useState("");
   const [promptParams, setPromptParams] = useState<PromptParams>(
     initPromptParamsState
@@ -45,14 +43,12 @@ export default function RecipeSearch({ options }: Props) {
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
     const name = event.target.name as CheckboxNames;
-    // if (validCheckBoxNames.includes(name)) {
     setPromptParams({
       ...promptParams,
       [name]: checked
         ? [...promptParams[name], value]
         : promptParams[name].filter((item: string) => item !== value),
     });
-    // }
   };
 
   const handleAddAllergies = (event: FormEvent<HTMLFormElement>) => {
@@ -72,7 +68,7 @@ export default function RecipeSearch({ options }: Props) {
     console.log(name, value);
     setPromptParams({
       ...promptParams,
-      [name]: value,
+      [name]: [value],
     });
   };
 
@@ -103,10 +99,7 @@ export default function RecipeSearch({ options }: Props) {
             <PromptParamsDisplay
               key={index}
               title={key}
-              selectedOptions={
-                // works, but a bit hacky
-                (promptParams as { [key: string]: string | string[] })[key]
-              }
+              selectedOptions={promptParams[key as keyof typeof promptParams]}
             />
           ))}
       </div>
@@ -124,7 +117,7 @@ export default function RecipeSearch({ options }: Props) {
 
       <SelectInput
         options={options.difficulty}
-        value={promptParams.difficulty}
+        value={promptParams.difficulty[0]}
         onChange={handleSelectChange}
         name="difficulty"
         placeholder="Select Difficulty"
@@ -132,7 +125,7 @@ export default function RecipeSearch({ options }: Props) {
 
       <SelectInput
         options={options.maxPrepTimeOptions}
-        value={promptParams.difficulty}
+        value={promptParams.maxPrepTime[0]}
         onChange={handleSelectChange}
         name="maxPrepTime"
         placeholder="Set Max Prep Time"

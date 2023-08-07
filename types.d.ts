@@ -25,12 +25,12 @@ type PromptParams = {
   selectedIngredients: string[];
   cuisines: string[];
   dietaryPreferences: string[];
-  maxPrepTime: string;
-  difficulty: string;
+  maxPrepTime: string[];
+  difficulty: string[];
   allergies: string[];
 };
 
-type CheckboxNames = "selectedIngredients" | "cuisines" | "dietaryPreferences";
+type CheckboxNames = "maxPrepTime" | "allergies" | "selectedIngredients" | "cuisines" | "dietaryPreferences";
 
 type MenuOptions = {
   cuisines: string[];
