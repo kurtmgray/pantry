@@ -16,7 +16,6 @@ export default function SelectInput({
   name,
   placeholder,
 }: Props) {
-  console.log(options);
   return (
     <select
       className={styles.selectInput}

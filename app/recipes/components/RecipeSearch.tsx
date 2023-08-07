@@ -1,6 +1,7 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { getNewRecipe } from "@/lib/getNewRecipe";
+import { camelCaseToWords } from "@/lib/camelCaseToWords";
 import RecipeCard from "@/app/components/RecipeCard";
 import PromptParamsDisplay from "./PromptParamsDisplay";
 import OptionsList from "./OptionsList";
@@ -8,13 +9,6 @@ import SelectInput from "./SelectInput";
 import parseRecipeString from "@/lib/parseResponseString";
 import SearchableIngredientsList from "./SearchableIngredientList";
 import styles from "../Recipes.module.css";
-
-// TODO: styles
-const optionStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  paddingLeft: "2rem",
-};
 
 type Props = {
   options: MenuOptions;
@@ -31,7 +25,7 @@ const initPromptParamsState: PromptParams = {
 
 export default function RecipeSearch({ options }: Props) {
   const { cuisines, dietaryPreferences } = options;
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [newAllergy, setNewAllergy] = useState("");
   const [promptParams, setPromptParams] = useState<PromptParams>(
     initPromptParamsState
@@ -43,6 +37,8 @@ export default function RecipeSearch({ options }: Props) {
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
     const name = event.target.name as CheckboxNames;
+    console.log(name, value, checked);
+
     setPromptParams({
       ...promptParams,
       [name]: checked
@@ -92,62 +88,77 @@ export default function RecipeSearch({ options }: Props) {
       <h2>Pantry</h2>
       <button onClick={handleGetRecipe}>Get Recipe</button>
       <h2>Selected Items:</h2>
-      <div style={optionStyles}>
+      <div>
         {Object.keys(promptParams)
           .sort()
           .map((key, index) => (
             <PromptParamsDisplay
               key={index}
               title={key}
+              formatTitle={camelCaseToWords}
               selectedOptions={promptParams[key as keyof typeof promptParams]}
             />
           ))}
       </div>
+      <div className={styles.miscInputs}>
+        <form onSubmit={handleAddAllergies}>
+          <input
+            className={styles.searchInput}
+            type="text"
+            name="allergies"
+            placeholder="Allergies"
+            value={newAllergy}
+            onChange={(e) => setNewAllergy(e.target.value)}
+          />
+          <button type="submit">Submit</button>
+        </form>
 
-      <form onSubmit={handleAddAllergies}>
+        <SelectInput
+          options={options.difficulty}
+          value={promptParams.difficulty[0]}
+          onChange={handleSelectChange}
+          name="difficulty"
+          placeholder="Select Difficulty"
+        />
+
+        <SelectInput
+          options={options.maxPrepTimeOptions}
+          value={promptParams.maxPrepTime[0]}
+          onChange={handleSelectChange}
+          name="maxPrepTime"
+          placeholder="Set Max Prep Time"
+        />
+      </div>
+
+      <div>
         <input
+          className={styles.searchInput}
           type="text"
-          name="allergies"
-          placeholder="Allergies"
-          value={newAllergy}
-          onChange={(e) => setNewAllergy(e.target.value)}
+          placeholder="Search pantry"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button type="submit">Submit</button>
-      </form>
-
-      <SelectInput
-        options={options.difficulty}
-        value={promptParams.difficulty[0]}
-        onChange={handleSelectChange}
-        name="difficulty"
-        placeholder="Select Difficulty"
-      />
-
-      <SelectInput
-        options={options.maxPrepTimeOptions}
-        value={promptParams.maxPrepTime[0]}
-        onChange={handleSelectChange}
-        name="maxPrepTime"
-        placeholder="Set Max Prep Time"
-      />
-
-      <div style={optionStyles}>
-        <SearchableIngredientsList
-          handleCheckboxChange={handleCheckboxChange}
-          promptParams={promptParams}
-        />
-        <OptionsList
-          title={"Cuisine"}
-          options={cuisines}
-          handleCheckboxChange={handleCheckboxChange}
-          promptParams={promptParams}
-        />
-        <OptionsList
-          title={"Dietary Preferences"}
-          options={dietaryPreferences}
-          handleCheckboxChange={handleCheckboxChange}
-          promptParams={promptParams}
-        />
+        <div className={styles.listContainer}>
+          <SearchableIngredientsList
+            searchTerm={searchTerm}
+            promptParams={promptParams}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+          <OptionsList
+            title={"cuisines"}
+            options={cuisines}
+            promptParams={promptParams}
+            formatTitle={camelCaseToWords}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+          <OptionsList
+            title={"dietaryPreferences"}
+            options={dietaryPreferences}
+            promptParams={promptParams}
+            formatTitle={camelCaseToWords}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+        </div>
       </div>
     </div>
   );

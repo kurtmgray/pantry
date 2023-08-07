@@ -1,6 +1,8 @@
 "use client";
 import { useState, MouseEvent, ChangeEvent, FormEvent } from "react";
 import { useGlobalState } from "@/app/providers";
+import { getIngredientToAdd } from "@/lib/getIngredientToAdd";
+import { postNewPantryItem } from "@/lib/postNewPantryItem";
 import IngredientCard from "./IngredientCard";
 
 type Props = {
@@ -19,15 +21,11 @@ export default function AddIngredientForm({ formStyles }: Props) {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const addPantryItem = async (ingredientFromEdamam: EdamamIngredient) => {
-    const response = await fetch(`/api/ingredients`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ingredientFromEdamam),
-    });
-    const addedItem = await response.json();
+  const handleAddPantryItem = async (
+    ingredientFromEdamam: EdamamIngredient
+  ) => {
+    const addedItem = await postNewPantryItem(ingredientFromEdamam);
+
     setState((state: GlobalState) => {
       return { ...state, pantry: [...state.pantry, addedItem] };
     });
@@ -47,34 +45,13 @@ export default function AddIngredientForm({ formStyles }: Props) {
     e.preventDefault();
     setIsLoading(true);
     console.log("Looking for ingredient:", ingredientSearch);
-    const getIngredientToAdd = async (
-      ingredientName: string,
-      ingredientBrand: string
-    ) => {
-      const url = "/api/ingredients/";
-      const params = `?ingr=${ingredientName}${
-        ingredientBrand !== "" ? `&brand=${ingredientBrand}` : ""
-      }`;
-      console.log("params: ", params);
-      try {
-        const response = await fetch(url + params, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log(response);
-        if (response.ok) {
-          const data = await response.json();
-          const ingredientsWithImg: EdamamIngredient[] = data.hints.filter(
-            (ingr: EdamamIngredient) => ingr.food.image
-          );
-          ingredientsWithImg.length > 0 &&
-            setIngredientsFromEdamam(ingredientsWithImg.slice(0, 5));
-        }
-      } catch (error) {
-        console.error("Error fetching ingredient: ", error);
-      }
-    };
-    await getIngredientToAdd(ingredientSearch.name, ingredientSearch.brand);
+
+    const ingredient = await getIngredientToAdd(
+      ingredientSearch.name,
+      ingredientSearch.brand
+    );
+    ingredient && setIngredientsFromEdamam(ingredient);
+
     setIngredientSearch({
       name: "",
       brand: "",
@@ -83,7 +60,8 @@ export default function AddIngredientForm({ formStyles }: Props) {
   };
 
   const handleCreatePantryItem = async (ingredient: EdamamIngredient) => {
-    addPantryItem(ingredient);
+    console.log(ingredient);
+    handleAddPantryItem(ingredient);
     setIngredientsFromEdamam([]);
   };
 

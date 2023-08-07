@@ -1,33 +1,20 @@
 import React from "react";
+import { camelCaseToWords } from "@/lib/camelCaseToWords";
 
 type Props = {
   title: string;
   selectedOptions: string[];
+  formatTitle: (title: string) => string;
 };
 
-function camelCaseToWords(camelCaseString: string) {
-  let words = [];
-  let word = "";
-  for (let i = 0; i < camelCaseString.length; i++) {
-    let char = camelCaseString[i];
-    if (char === char.toUpperCase() && word) {
-      words.push(word);
-      word = char;
-    } else {
-      word += char;
-    }
-  }
-  words.push(word);
-
-  return words
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-export default function PromptParamsDisplay({ title, selectedOptions }: Props) {
+export default function PromptParamsDisplay({
+  title,
+  selectedOptions,
+  formatTitle,
+}: Props) {
   return (
     <div>
-      <h3>{camelCaseToWords(title)}:</h3>
+      <h3>{formatTitle(title)}:</h3>
       <ul>
         {selectedOptions.map((option, index) => (
           <li key={index}>{option}</li>

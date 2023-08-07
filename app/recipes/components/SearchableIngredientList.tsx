@@ -4,14 +4,15 @@ import { usePantryItems } from "@/lib/usePantryItems";
 import styles from "../Recipes.module.css";
 
 type Props = {
-  handleCheckboxChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  searchTerm: string;
   promptParams: PromptParams;
+  handleCheckboxChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 export default function SearchableIngredientsList({
-  handleCheckboxChange,
+  searchTerm,
   promptParams,
+  handleCheckboxChange,
 }: Props) {
-  const [searchTerm, setSearchTerm] = useState("");
   const {
     state: { pantry },
     setState,
@@ -20,54 +21,44 @@ export default function SearchableIngredientsList({
   const { pantryItems, isLoading, error } = usePantryItems();
 
   useEffect(() => {
-    console.log(pantryItems, error);
     setState((state: GlobalState) => {
       return { ...state, pantry: pantryItems };
     });
-  }, [pantryItems, error, setState]);
+  }, [pantryItems, setState]);
+  console.log(searchTerm);
 
   return (
-    <div className={styles.SearchableIngredientsList}>
-      {/* TODO: use searchbar here? */}
-      <input
-        type="text"
-        placeholder="Search pantry"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
-      <div>
-        <h2>Ingredients:</h2>
-        <ul>
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : pantry.length === 0 ? (
-            <p>No items in the pantry</p>
-          ) : (
-            pantry
-              .filter((ingredient) =>
-                ingredient.knownAs
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              )
-              .slice(0, 20)
-              .map((ingredient) => (
-                <li key={ingredient.id}>
-                  <input
-                    type="checkbox"
-                    name="selectedIngredients"
-                    value={ingredient.knownAs}
-                    checked={promptParams.selectedIngredients.some(
-                      (selected) => selected === ingredient.knownAs
-                    )}
-                    onChange={handleCheckboxChange}
-                  />
-                  {ingredient.knownAs}
-                </li>
-              ))
-          )}
-        </ul>
-      </div>
+    <div className={styles.searchableIngredientsList}>
+      <h2>Ingredients:</h2>
+      <ul>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : pantry.length === 0 ? (
+          <p>No items in the pantry</p>
+        ) : (
+          pantry
+            .filter((ingredient) =>
+              ingredient.knownAs
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            )
+            .slice(0, 20)
+            .map((ingredient) => (
+              <li key={ingredient.id}>
+                <input
+                  type="checkbox"
+                  name="selectedIngredients"
+                  value={ingredient.knownAs}
+                  checked={promptParams.selectedIngredients.some(
+                    (selected) => selected === ingredient.knownAs
+                  )}
+                  onChange={handleCheckboxChange}
+                />
+                {ingredient.knownAs}
+              </li>
+            ))
+        )}
+      </ul>
     </div>
   );
 }

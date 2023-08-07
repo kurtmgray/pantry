@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React from "react";
 import Image from "next/image";
 import styles from "./../Pantry.module.css";
 
@@ -10,41 +10,35 @@ export default function IngredientCard({
   ingredient,
   onCreatePantryItem,
 }: Props) {
+  const {
+    food: { brand, label, image, knownAs, nutrients, foodId },
+  } = ingredient;
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div>
-          <h2>{ingredient.food.label}</h2>
-          {ingredient.food.brand ? (
-            <p>{ingredient.food.brand}</p>
-          ) : (
-            <p>Generic</p>
-          )}
+          <h2>{label}</h2>
+          {brand ? <p>{brand}</p> : <p>Generic</p>}
         </div>
       </div>
       <div className={styles.cardBody}>
         {ingredient.food.image ? (
           <Image
-            src={ingredient.food.image}
+            src={image}
             width={100}
             height={100}
-            alt={`image of ${ingredient.food.knownAs}`}
+            alt={`image of ${knownAs}`}
           />
         ) : (
           <p className={styles.noImage}>No image available</p>
         )}
         <div className={styles.cardNutrients}>
           <h4>Nutrients per 100g</h4>
-          <p>
-            Calories: {ingredient.food.nutrients.ENERC_KCAL.toFixed(1)} kcal
-          </p>
-          <p>Protein: {ingredient.food.nutrients.PROCNT.toFixed(1)} g</p>
-          <p>Carbs: {ingredient.food.nutrients.CHOCDF.toFixed(1)} g</p>
-          <p>Fat: {ingredient.food.nutrients.FAT.toFixed(1)} g</p>
-          <button
-            id={ingredient.food.foodId}
-            onClick={() => onCreatePantryItem(ingredient)}
-          >
+          <p>Calories: {nutrients.ENERC_KCAL.toFixed(1)} kcal</p>
+          <p>Protein: {nutrients.PROCNT.toFixed(1)} g</p>
+          <p>Carbs: {nutrients.CHOCDF.toFixed(1)} g</p>
+          <p>Fat: {nutrients.FAT.toFixed(1)} g</p>
+          <button id={foodId} onClick={() => onCreatePantryItem(ingredient)}>
             Add to Pantry
           </button>
         </div>

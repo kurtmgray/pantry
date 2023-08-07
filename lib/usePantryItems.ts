@@ -26,7 +26,7 @@ export function usePantryItems() {
       }
     };
     fetchItems();
-  }, [session]);
+  }, [session.status]);
 
   return { pantryItems, isLoading, error };
 }

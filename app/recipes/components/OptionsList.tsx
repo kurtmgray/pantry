@@ -4,24 +4,26 @@ import styles from "../Recipes.module.css";
 type Props = {
   title: string;
   handleCheckboxChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  formatTitle: (title: string) => string;
   options: string[];
   promptParams: PromptParams;
 };
 export default function OptionsList({
   title,
   handleCheckboxChange,
+  formatTitle,
   options,
   promptParams,
 }: Props) {
   return (
     <div className={styles.optionsList}>
-      <h2>{title}</h2>
+      <h2>{formatTitle(title)}</h2>
       <ul>
-        {options.map((option, index) => (
+        {options.sort().map((option, index) => (
           <li key={index}>
             <input
               type="checkbox"
-              name={title.toLowerCase()}
+              name={title}
               value={option}
               checked={promptParams.cuisines.includes(option)}
               onChange={handleCheckboxChange}

@@ -23,8 +23,8 @@
   }
   
   .recipeSearch button {
-    padding: 10px 20px;
-    margin: 20px 0;
+    padding: 10px;
+    margin: 0px 20px 16px 10px;
     background: #007BFF;
     color: #fff;
     border: none;
@@ -35,7 +35,8 @@
   .recipeSearch form {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
+    /* margin-bottom: 20px; */
   }
   
   .recipeSearch form input {
@@ -45,17 +46,45 @@
     border-radius: 5px;
   }
   
-  .recipeSearch form button {
+  /* .recipeSearch form button {
+    padding: 10px;
     margin-left: 10px;
-  }
+    margin-top: 0px;
+    margin-right: 16px;
+  } */
   
-  /* SelectInput styles */
+  /* input styles */
   .selectInput {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 20px;
+  }
+
+  .searchInput {
+    width: 200px;
+    height: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+  .miscInputs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  /* List Container styles */
+
+  .listContainer {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
   }
   
   /* OptionsList styles */
@@ -83,18 +112,11 @@
   .searchableIngredientsList {
     margin-bottom: 20px;
   }
-  
-  .searchableIngredientsList input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
-  
-  .searchableIngredientsList ul {
-    list-style-type: none;
-    padding-left: 0;
+
+  .searchableIngredientsList h2 {
+    font-size: 1.3em;
+    color: #333;
+    margin-bottom: 10px;
   }
   
   .searchableIngredientsList li {
