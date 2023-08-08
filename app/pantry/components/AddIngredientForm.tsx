@@ -1,8 +1,8 @@
 "use client";
 import { useState, MouseEvent, ChangeEvent, FormEvent } from "react";
 import { useGlobalState } from "@/app/providers";
-import { getIngredientToAdd } from "@/lib/getIngredientToAdd";
-import { postNewPantryItem } from "@/lib/postNewPantryItem";
+import { getIngredientToAdd } from "@/app/api/getIngredientToAdd";
+import { postNewPantryItem } from "@/app/api/postNewPantryItem";
 import IngredientCard from "./IngredientCard";
 
 type Props = {

@@ -1,5 +1,5 @@
 
-import { useGlobalState } from "@/app/providers";
+import { useGlobalState } from "../providers";
 import { useState, useRef } from "react";
 
 // originally written for useTransition and deduping router.replace() calls

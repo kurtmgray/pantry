@@ -1,8 +1,11 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { CustomSession } from "./types";
+import { CustomSession } from "@/lib/types";
 
 export const fetchPantryItemsServer = async () => {
+  
+  // user is verified through session
+  
   const session: CustomSession | null = await getServerSession(authOptions);
   const userId = session?.user?.id;
   if (userId) {

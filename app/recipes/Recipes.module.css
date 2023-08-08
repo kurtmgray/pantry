@@ -5,127 +5,126 @@
     align-items: center;
     padding: 20px;
   }
-  
-  /* RecipeSearch styles */
-  .recipeSearch {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .recipeSearch h2 {
-    font-size: 1.5em;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .recipeSearch button {
-    padding: 10px;
-    margin: 0px 20px 16px 10px;
-    background: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .recipeSearch form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* margin-bottom: 20px; */
-  }
-  
-  .recipeSearch form input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  /* .recipeSearch form button {
-    padding: 10px;
-    margin-left: 10px;
-    margin-top: 0px;
-    margin-right: 16px;
-  } */
-  
-  /* input styles */
-  .selectInput {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
 
-  .searchInput {
-    width: 200px;
-    height: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
+/* RecipeSearch styles */
+.recipeSearch {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  .miscInputs {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
+.recipeSearch h2 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
 
-  /* List Container styles */
+.recipeSearch button {
+  padding: 10px;
+  margin: 0px 20px 16px 10px;
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .listContainer {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-  }
-  
-  /* OptionsList styles */
-  .optionsList {
-    margin-bottom: 20px;
-  }
-  
-  .optionsList h2 {
-    font-size: 1.3em;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .optionsList li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .optionsList li input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  /* SearchableIngredientsList styles */
-  .searchableIngredientsList {
-    margin-bottom: 20px;
-  }
+.recipeSearch form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 20px; */
+}
 
-  .searchableIngredientsList h2 {
-    font-size: 1.3em;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .searchableIngredientsList li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .searchableIngredientsList li input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
+.recipeSearch form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* .recipeSearch form button {
+  padding: 10px;
+  margin-left: 10px;
+  margin-top: 0px;
+  margin-right: 16px;
+} */
+
+/* input styles */
+.selectInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.searchInput {
+  width: 200px;
+  height: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.miscInputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* List Container styles */
+
+.listContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* OptionsList styles */
+.optionsList {
+  margin-bottom: 20px;
+}
+
+.optionsList h2 {
+  font-size: 1.3em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.optionsList li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.optionsList li input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* SearchableIngredientsList styles */
+.searchableIngredientsList {
+  margin-bottom: 20px;
+}
+
+.searchableIngredientsList h2 {
+  font-size: 1.3em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.searchableIngredientsList li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.searchableIngredientsList li input[type="checkbox"] {
+  margin-right: 10px;
+}

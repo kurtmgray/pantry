@@ -1,5 +1,5 @@
 import React from "react";
-import { camelCaseToWords } from "@/lib/camelCaseToWords";
+import { camelCaseToWords } from "@/app/utils/camelCaseToWords";
 
 type Props = {
   title: string;

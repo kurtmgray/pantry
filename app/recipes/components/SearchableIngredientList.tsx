@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
-import { usePantryItems } from "@/lib/usePantryItems";
+import { usePantryItems } from "@/app/hooks/usePantryItems";
 import styles from "../Recipes.module.css";
 
 type Props = {

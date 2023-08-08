@@ -2,7 +2,7 @@
 import React, { useEffect, Dispatch, SetStateAction } from "react";
 import PantryItemCard from "./PantryItemCard";
 import { useGlobalState } from "@/app/providers";
-import { usePantryItems } from "@/lib/usePantryItems";
+import { usePantryItems } from "@/app/hooks/usePantryItems";
 
 type Props = {
   listStyles: { [key: string]: string };

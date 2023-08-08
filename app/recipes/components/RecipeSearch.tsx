@@ -1,7 +1,7 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { getNewRecipe } from "@/lib/getNewRecipe";
-import { camelCaseToWords } from "@/lib/camelCaseToWords";
+import { camelCaseToWords } from "@/app/utils/camelCaseToWords";
 import RecipeCard from "@/app/components/RecipeCard";
 import PromptParamsDisplay from "./PromptParamsDisplay";
 import OptionsList from "./OptionsList";
