@@ -16,9 +16,10 @@ enum Status {
   SAVED,
 }
 
-export default function RecipeCard({
-  recipe: { id, title, summary, image, ...recipe },
-}: Props) {
+export default function RecipeCard({ recipe }: Props) {
+  // const { id, title, summary, image, preptime, cooktime, ingredients } = recipe;
+
+  // TODO: status in parent?
   const [recipeStatus, setRecipeStatus] = useState<Status | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const session = useSession();
@@ -57,10 +58,10 @@ export default function RecipeCard({
       recipeData = {
         ...recipeData,
         addedById: parseInt(user.id),
-        image: image!,
+        // image: image!,
       };
     }
-
+    // TODO: extract to api service
     try {
       const response = await fetch(`/api/recipes`, {
         method: "POST",
@@ -116,9 +117,9 @@ export default function RecipeCard({
           <li key={index}>{step}</li>
         ))}
       </ul>
-      {image && (
+      {/* {image && (
         <Image src={image} alt="recipe image" width={256} height={256} />
-      )}
+      )} */}
       {recipeStatus === Status.NOT_SAVED && (
         <button onClick={(e) => handleSaveRecipe(e)}>Save Recipe</button>
       )}

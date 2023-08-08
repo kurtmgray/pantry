@@ -6,19 +6,20 @@
 }
 
 .form {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 20px;
 }
 
 .loading {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: "Great Vibes", cursive;
+  gap: 10px;
 }
 
 .group {
@@ -153,13 +154,12 @@
 .searchBar {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
 }
 
 .form {
-  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 16px;
@@ -224,22 +224,13 @@
 }
 
 .notAvailable {
-  animation-name: flash, hide;
+  animation-name: flash;
   animation-duration: 5s;
   animation-iteration-count: 1;
-  animation-fill-mode: forwards;
   border-radius: 4px;
   padding: 4px;
 }
-@keyframes hide {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
+
 @keyframes flash {
   0% {
     background-color: red;
@@ -247,9 +238,5 @@
   50% {
     background-color: transparent;
   }
-  100% {
-    opacity: 0;
-    visibility: hidden;
 
-  }
 }

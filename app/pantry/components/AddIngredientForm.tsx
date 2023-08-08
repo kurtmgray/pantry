@@ -4,6 +4,7 @@ import { useGlobalState } from "@/app/providers";
 import { getIngredientToAdd } from "@/app/services/api//getIngredientToAdd";
 import { postNewPantryItem } from "@/app/services/api/postNewPantryItem";
 import IngredientCard from "./IngredientCard";
+import { Spin } from "antd";
 
 type Props = {
   formStyles: { [key: string]: string };
@@ -19,7 +20,8 @@ export default function AddIngredientForm({ formStyles }: Props) {
   const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
     EdamamIngredient[]
   >([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [displayNotFound, setDisplayNotFound] = useState(false);
 
   const handleAddPantryItem = async (
     ingredientFromEdamam: EdamamIngredient
@@ -43,20 +45,28 @@ export default function AddIngredientForm({ formStyles }: Props) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsFetching(true);
     console.log("Looking for ingredient:", ingredientSearch);
 
-    const ingredient = await getIngredientToAdd(
+    const ingredients = await getIngredientToAdd(
       ingredientSearch.name,
       ingredientSearch.brand
     );
-    ingredient && setIngredientsFromEdamam(ingredient);
+    if (ingredients && ingredients.length > 0) {
+      setIngredientsFromEdamam(ingredients);
+      console.log("Ingredients from Edamam:", ingredients);
+    } else {
+      setDisplayNotFound(true);
+      setTimeout(() => {
+        setDisplayNotFound(false);
+      }, 5000);
+    }
 
     setIngredientSearch({
       name: "",
       brand: "",
     });
-    setIsLoading(false);
+    setIsFetching(false);
   };
 
   const handleCreatePantryItem = async (ingredient: EdamamIngredient) => {
@@ -69,8 +79,8 @@ export default function AddIngredientForm({ formStyles }: Props) {
     <div>
       <h1>Search for food items:</h1>
       <div className={formStyles.searchBar}>
-        {isLoading ? (
-          <h1 className={formStyles.loading}> Loading... </h1>
+        {isFetching ? (
+          <h1 className={formStyles.loading}> Loading... {<Spin />}</h1>
         ) : (
           <form className={formStyles.form} onSubmit={handleSubmit}>
             <input
@@ -90,26 +100,26 @@ export default function AddIngredientForm({ formStyles }: Props) {
             <button type="submit">Submit</button>
           </form>
         )}
-        {ingredientsFromEdamam.length > 0 && (
-          <button onClick={() => setIngredientsFromEdamam([])}>
-            Clear Search Results
-          </button>
+        {displayNotFound && (
+          <p className={formStyles.notAvailable}>Ingredient not available.</p>
         )}
+        {ingredientsFromEdamam.length > 0 &&
+          !displayNotFound &&
+          !isFetching && (
+            <button onClick={() => setIngredientsFromEdamam([])}>
+              Clear Search Results
+            </button>
+          )}
       </div>
       <div className={formStyles.ingredients}>
-        {ingredientsFromEdamam.length > 0 ? (
+        {ingredientsFromEdamam.length > 0 &&
           ingredientsFromEdamam.map((ingredient, idx) => (
             <IngredientCard
               key={idx}
               ingredient={ingredient}
               onCreatePantryItem={handleCreatePantryItem}
             />
-          ))
-        ) : (
-          <p className={!isLoading ? formStyles.notAvailable : ""}>
-            {isLoading ? "" : "Ingredient not available."}
-          </p>
-        )}
+          ))}
       </div>
     </div>
   );

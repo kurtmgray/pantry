@@ -8,6 +8,7 @@ import OptionsList from "./OptionsList";
 import SelectInput from "./SelectInput";
 import parseRecipeString from "@/app/utils/parseResponseString";
 import SearchableIngredientsList from "./SearchableIngredientList";
+import { Spin } from "antd";
 import styles from "../Recipes.module.css";
 
 type Props = {
@@ -25,6 +26,7 @@ const initPromptParamsState: PromptParams = {
 
 export default function RecipeSearch({ options }: Props) {
   const { cuisines, dietaryPreferences } = options;
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [newAllergy, setNewAllergy] = useState("");
   const [promptParams, setPromptParams] = useState<PromptParams>(
@@ -69,10 +71,13 @@ export default function RecipeSearch({ options }: Props) {
   };
 
   const handleGetRecipe = async () => {
+    setIsLoading(true);
     const data = await getNewRecipe(promptParams, 1);
     if (data.statusCode === 200) {
       setRecipeResponse(data.body!);
     }
+    setIsLoading(false);
+    console.log(data);
   };
 
   return (
@@ -86,7 +91,11 @@ export default function RecipeSearch({ options }: Props) {
           })}
       </div>
       <h2>Pantry</h2>
-      <button onClick={handleGetRecipe}>Get Recipe</button>
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <button onClick={handleGetRecipe}>Get Recipe</button>
+      )}
       <h2>Selected Items:</h2>
       <div>
         {Object.keys(promptParams)
