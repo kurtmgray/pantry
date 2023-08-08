@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchPantryItemsClient } from "../api/fetchPantryItemsClientSide";
+import { fetchPantryItemsClient } from "../services/api/fetchPantryItemsClientSide";
 import { useSession } from "next-auth/react";
 
 export function usePantryItems() {

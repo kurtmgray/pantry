@@ -1,8 +1,8 @@
 "use client";
-import { useState, MouseEvent, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useGlobalState } from "@/app/providers";
-import { getIngredientToAdd } from "@/app/api/getIngredientToAdd";
-import { postNewPantryItem } from "@/app/api/postNewPantryItem";
+import { getIngredientToAdd } from "@/app/services/api//getIngredientToAdd";
+import { postNewPantryItem } from "@/app/services/api/postNewPantryItem";
 import IngredientCard from "./IngredientCard";
 
 type Props = {
@@ -97,15 +97,22 @@ export default function AddIngredientForm({ formStyles }: Props) {
         )}
       </div>
       <div className={formStyles.ingredients}>
-        {ingredientsFromEdamam &&
+        {ingredientsFromEdamam.length > 0 ? (
           ingredientsFromEdamam.map((ingredient, idx) => (
             <IngredientCard
               key={idx}
               ingredient={ingredient}
               onCreatePantryItem={handleCreatePantryItem}
             />
-          ))}
+          ))
+        ) : (
+          <p className={!isLoading ? formStyles.notAvailable : ""}>
+            {isLoading ? "" : "Ingredient not available."}
+          </p>
+        )}
       </div>
     </div>
   );
 }
+
+// TODO: working on ingredient not available message

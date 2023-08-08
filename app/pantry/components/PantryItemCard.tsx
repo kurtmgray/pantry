@@ -1,5 +1,6 @@
-import React, { useState, MouseEvent, Dispatch, SetStateAction } from "react";
+import React, { useState, MouseEvent } from "react";
 import { useGlobalState } from "@/app/providers";
+import { deletePantryItem } from "@/app/services/api/deletePantryItem";
 import Image from "next/image";
 
 // add nutrition to ingredient schema
@@ -25,25 +26,13 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
   };
 
   const handleDeleteItem = async () => {
-    console.log(pantryItem.id);
-    try {
-      const response = await fetch(`/api/ingredients/?id=${pantryItem.id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        setState((state: GlobalState) => {
-          return {
-            ...state,
-            pantry: state.pantry.filter((item) => item.id !== pantryItem.id),
-          };
-        });
-        console.log("Item deleted successfully.");
-      } else {
-        console.error("Failed to delete item: ", response);
-      }
-    } catch (error) {
-      console.error("Error while deleting item:", error);
-    }
+    const deletedItemId = await deletePantryItem(pantryItem.id);
+    setState((state: GlobalState) => {
+      return {
+        ...state,
+        pantry: state.pantry.filter((item) => item.id !== deletedItemId),
+      };
+    });
   };
 
   return (

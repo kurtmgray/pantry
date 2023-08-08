@@ -1,4 +1,4 @@
-import { fetchRecipes } from "@/lib/fetchRecipes";
+import { fetchRecipes } from "../services/api/fetchRecipes";
 import styles from "./Dashboard.module.css";
 import SearchableList from "./components/SearchableList";
 

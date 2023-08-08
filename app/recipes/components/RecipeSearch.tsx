@@ -1,12 +1,12 @@
 "use client";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { getNewRecipe } from "@/lib/getNewRecipe";
+import { getNewRecipe } from "@/app/services/api/getNewRecipe";
 import { camelCaseToWords } from "@/app/utils/camelCaseToWords";
 import RecipeCard from "@/app/components/RecipeCard";
 import PromptParamsDisplay from "./PromptParamsDisplay";
 import OptionsList from "./OptionsList";
 import SelectInput from "./SelectInput";
-import parseRecipeString from "@/lib/parseResponseString";
+import parseRecipeString from "@/app/utils/parseResponseString";
 import SearchableIngredientsList from "./SearchableIngredientList";
 import styles from "../Recipes.module.css";
 

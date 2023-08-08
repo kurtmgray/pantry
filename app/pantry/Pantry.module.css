@@ -222,3 +222,34 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.notAvailable {
+  animation-name: flash, hide;
+  animation-duration: 5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  border-radius: 4px;
+  padding: 4px;
+}
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes flash {
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: transparent;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+
+  }
+}

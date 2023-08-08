@@ -7,7 +7,7 @@ import { prisma, getPantryItemsByUserId, deletePantryItem, postNewPantryItem } f
 
 export async function GET(request: NextRequest) {
   const userId = request.nextUrl.searchParams.get("id");
-  console.log(userId)
+
   if (userId) {
     try {
       // const userId = parseInt(session.user.id);

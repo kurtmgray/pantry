@@ -1,4 +1,4 @@
-import { fetchPantryItemsServer } from "@/lib/fetchPantryItemsServerSide";
+import { fetchPantryItemsServer } from "@/app/services/api/fetchPantryItemsServerSide";
 import styles from "./Pantry.module.css";
 import AddIngredientForm from "./components/AddIngredientForm";
 import PantryList from "./components/PantryList";

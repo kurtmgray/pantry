@@ -1,11 +1,9 @@
 "use client";
-// import { getServerSession } from "next-auth";
 import { MouseEvent, useEffect } from "react";
-// import { authOptions } from "../api/auth/[...nextauth]/route";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "@/lib/types";
-import { generateRecipeImage } from "@/lib/getNewRecipe";
+import { generateRecipeImage } from "@/app/services/api/getNewRecipe";
 import Image from "next/image";
 
 type Props = {
