@@ -25,7 +25,6 @@ export default function SearchableIngredientsList({
       return { ...state, pantry: pantryItems };
     });
   }, [pantryItems, setState]);
-  console.log(searchTerm);
 
   return (
     <div className={styles.searchableIngredientsList}>
@@ -47,9 +46,9 @@ export default function SearchableIngredientsList({
               <li key={ingredient.id}>
                 <input
                   type="checkbox"
-                  name="selectedIngredients"
+                  name="ingredients"
                   value={ingredient.knownAs}
-                  checked={promptParams.selectedIngredients.some(
+                  checked={promptParams.ingredients.some(
                     (selected) => selected === ingredient.knownAs
                   )}
                   onChange={handleCheckboxChange}

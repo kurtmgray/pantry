@@ -1,5 +1,5 @@
 import React from "react";
-import { camelCaseToWords } from "@/app/utils/camelCaseToWords";
+import styles from "../Recipes.module.css";
 
 type Props = {
   title: string;
@@ -13,13 +13,10 @@ export default function PromptParamsDisplay({
   formatTitle,
 }: Props) {
   return (
-    <div>
-      <h3>{formatTitle(title)}:</h3>
-      <ul>
-        {selectedOptions.map((option, index) => (
-          <li key={index}>{option}</li>
-        ))}
-      </ul>
+    <div className={styles.PromptParamsDisplay}>
+      <p>
+        {formatTitle(title)}: {selectedOptions.join(", ")}
+      </p>
     </div>
   );
 }

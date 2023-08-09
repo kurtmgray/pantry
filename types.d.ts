@@ -22,7 +22,7 @@ type CreateCompletionResponse = AxiosResponse<CreateCompletionResponseData>;
 type CreateImageResponse = AxiosResponse<CreateImageResponse>;
 
 type PromptParams = {
-  selectedIngredients: string[];
+  ingredients: string[];
   cuisines: string[];
   dietaryPreferences: string[];
   maxPrepTime: string[];
@@ -30,7 +30,7 @@ type PromptParams = {
   allergies: string[];
 };
 
-type CheckboxNames = "maxPrepTime" | "allergies" | "selectedIngredients" | "cuisines" | "dietaryPreferences";
+type CheckboxNames = "maxPrepTime" | "allergies" | "ingredients" | "cuisines" | "dietaryPreferences";
 
 type MenuOptions = {
   cuisines: string[];

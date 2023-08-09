@@ -16,7 +16,7 @@ type Props = {
 };
 
 const initPromptParamsState: PromptParams = {
-  selectedIngredients: [],
+  ingredients: [],
   allergies: [],
   cuisines: [],
   dietaryPreferences: [],
@@ -100,14 +100,19 @@ export default function RecipeSearch({ options }: Props) {
       <div>
         {Object.keys(promptParams)
           .sort()
-          .map((key, index) => (
-            <PromptParamsDisplay
-              key={index}
-              title={key}
-              formatTitle={camelCaseToWords}
-              selectedOptions={promptParams[key as keyof typeof promptParams]}
-            />
-          ))}
+          .map((key, index) => {
+            if (promptParams[key as keyof typeof promptParams].length === 0) {
+              return null;
+            }
+            return (
+              <PromptParamsDisplay
+                key={index}
+                title={key}
+                formatTitle={camelCaseToWords}
+                selectedOptions={promptParams[key as keyof typeof promptParams]}
+              />
+            );
+          })}
       </div>
       <div className={styles.miscInputs}>
         <form onSubmit={handleAddAllergies}>
