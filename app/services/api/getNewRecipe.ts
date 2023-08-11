@@ -19,23 +19,26 @@ export const getNewRecipe = async (
   numChoices: number
 ): Promise<APIResponse> => {
   const {
-    selectedIngredients,
+    ingredients,
     allergies,
     cuisines,
     dietaryPreferences,
     maxPrepTime,
     difficulty,
+    keywords,
+    category,
   } = promptParams;
   try {
     const prompt: string = `Act as a professional chef who has been featured on many cooking shows and publications. 
-    Recommend a recipe that contains a tasteful blend of SOME (not necessarily all) of the following: ${selectedIngredients}, in the following styles: ${cuisines}. 
+    Recommend a recipe that contains a tasteful blend of SOME (not necessarily all) of the following: ${ingredients}, in the following styles: ${cuisines}. 
     Be sensitive to all of the following dietary preferences, if any: ${dietaryPreferences} and allergies, if any: ${allergies}. 
-    Please only return recipes of a Michelin Star rated quality. 
+    Only return recipes of a Michelin Star rated quality. 
     Choose recipes whose combined prep and cook time are at or under ${maxPrepTime} minutes, and a difficulty of ${difficulty} or easier. 
-    Please send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. 
+    Consider the following keywords: ${keywords}.
+    Return a recipe in this category: ${category}.
+    Send your recipes back in paragraph form, with new lines for each of the following keys and recipe steps. 
     Provide a response with a randomly generated ID (key:_ID), title (key:_TITLE), summary (key:_SUMMARY), ingredients (key: _INGREDIENTS) each ingredient preceded by the character "%" in this format: name: ingredient name, unit: unit of measure, quantity: quantity of units (a number only, do not include the unit), instructions (key:_INSTRUCTIONS) with each step preceded by the character "@" including any prep on ingredients listed, prep time (key:_PREPTIME), cook time (key:_COOKTIME).
-    Choose a recipe category (key:_CATEGORY) from the following: SIDE, APPETIZER, BREAKFAST, LUNCH, DINNER, DESSERT, SNACK, DRINK`;
-    // probably make category a user option
+    If the category isn't specified above, choose an appropriate one (key:_CATEGORY) from the following: SIDE, APPETIZER, BREAKFAST, LUNCH, DINNER, DESSERT, SNACK, DRINK`;
     const textResponse: CreateCompletionResponse = await generateRecipe(
       prompt,
       numChoices

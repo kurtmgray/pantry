@@ -15,6 +15,12 @@ type Props = {
   options: MenuOptions;
 };
 
+type InputName = "allergies" | "keywords";
+
+const isInputName = (name: string): name is InputName => {
+  return name === "allergies" || name === "keywords";
+};
+
 const initPromptParamsState: PromptParams = {
   ingredients: [],
   allergies: [],
@@ -22,6 +28,8 @@ const initPromptParamsState: PromptParams = {
   dietaryPreferences: [],
   maxPrepTime: [],
   difficulty: [],
+  keywords: [],
+  category: [],
 };
 
 export default function RecipeSearch({ options }: Props) {
@@ -29,6 +37,8 @@ export default function RecipeSearch({ options }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [newAllergy, setNewAllergy] = useState("");
+  const [newKeyword, setNewKeyword] = useState("");
+
   const [promptParams, setPromptParams] = useState<PromptParams>(
     initPromptParamsState
   );
@@ -38,36 +48,44 @@ export default function RecipeSearch({ options }: Props) {
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
+
+    // TODO: standardize type guards (see Notion page)
     const name = event.target.name as CheckboxNames;
     console.log(name, value, checked);
 
-    setPromptParams({
-      ...promptParams,
-      [name]: checked
-        ? [...promptParams[name], value]
-        : promptParams[name].filter((item: string) => item !== value),
+    setPromptParams((prev) => {
+      return {
+        ...prev,
+        [name]: checked
+          ? [...prev[name], value]
+          : prev[name].filter((item: string) => item !== value),
+      };
     });
   };
 
-  const handleAddAllergies = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // const allergies: string = event.currentTarget.value;
+  const handleAddParam = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const { name, value } = e.currentTarget.elements[0] as HTMLInputElement;
 
-    setPromptParams({
-      ...promptParams,
-      allergies: [...promptParams.allergies, newAllergy],
-    });
+    // TODO: standardize type guards (see Notion page)
+    if (isInputName(name)) {
+      setPromptParams((prev) => ({
+        ...prev,
+        [name]: [...prev[name], value],
+      }));
 
-    setNewAllergy("");
+      name === "allergies" && setNewAllergy("");
+      name === "keywords" && setNewKeyword("");
+    }
   };
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = event.target;
     console.log(name, value);
-    setPromptParams({
-      ...promptParams,
+    setPromptParams((prev) => ({
+      ...prev,
       [name]: [value],
-    });
+    }));
   };
 
   const handleGetRecipe = async () => {
@@ -115,17 +133,13 @@ export default function RecipeSearch({ options }: Props) {
           })}
       </div>
       <div className={styles.miscInputs}>
-        <form onSubmit={handleAddAllergies}>
-          <input
-            className={styles.searchInput}
-            type="text"
-            name="allergies"
-            placeholder="Allergies"
-            value={newAllergy}
-            onChange={(e) => setNewAllergy(e.target.value)}
-          />
-          <button type="submit">Submit</button>
-        </form>
+        <SelectInput
+          options={options.category}
+          value={promptParams.category[0]}
+          onChange={handleSelectChange}
+          name="category"
+          placeholder="Select a category"
+        />
 
         <SelectInput
           options={options.difficulty}
@@ -140,18 +154,43 @@ export default function RecipeSearch({ options }: Props) {
           value={promptParams.maxPrepTime[0]}
           onChange={handleSelectChange}
           name="maxPrepTime"
-          placeholder="Set Max Prep Time"
+          placeholder="Select Prep Time"
         />
       </div>
 
       <div>
-        <input
-          className={styles.searchInput}
-          type="text"
-          placeholder="Search pantry"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <div className={styles.inputDiv}>
+          <input
+            className={styles.searchInput}
+            type="text"
+            placeholder="Search pantry"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <form onSubmit={handleAddParam}>
+            <input
+              className={styles.searchInput}
+              name="keywords"
+              type="text"
+              placeholder="Keywords"
+              value={newKeyword}
+              onChange={(e) => setNewKeyword(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>
+          <form onSubmit={handleAddParam}>
+            <input
+              className={styles.searchInput}
+              type="text"
+              name="allergies"
+              placeholder="Allergies"
+              value={newAllergy}
+              onChange={(e) => setNewAllergy(e.target.value)}
+            />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
         <div className={styles.listContainer}>
           <SearchableIngredientsList
             searchTerm={searchTerm}

@@ -28,7 +28,12 @@ type PromptParams = {
   maxPrepTime: string[];
   difficulty: string[];
   allergies: string[];
+  keywords: string[];
+  category: RecipeCategory[]; 
 };
+
+type RecipeCategory =
+  "Side" | "Appetizer" | "Breakfast" | "Lunch" | "Dinner" | "Dessert" | "Snack" | "Drink" | ""
 
 type CheckboxNames = "maxPrepTime" | "allergies" | "ingredients" | "cuisines" | "dietaryPreferences";
 
@@ -37,6 +42,7 @@ type MenuOptions = {
   dietaryPreferences: string[];
   maxPrepTimeOptions: number[];
   difficulty: string[];
+  category: RecipeCategory[];
 };
 
 // type ParsedRecipe = {

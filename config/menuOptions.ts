@@ -32,6 +32,7 @@ export const menuOptions: MenuOptions = {
   ],
   maxPrepTimeOptions: [15, 30, 60, 120],
   difficulty: ["Easy", "Medium", "Hard"],
+  category: ["Side", "Appetizer", "Breakfast", "Lunch", "Dinner", "Dessert", "Snack", "Drink", ""]
 };
 
 export const formatValue = (value: string) => {
