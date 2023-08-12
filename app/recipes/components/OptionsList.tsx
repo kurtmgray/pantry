@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import styles from "../Recipes.module.css";
 
 type Props = {
-  title: string;
+  title: CheckboxNames;
   handleCheckboxChange: (event: ChangeEvent<HTMLInputElement>) => void;
   formatTitle: (title: string) => string;
   options: string[];
@@ -25,7 +25,7 @@ export default function OptionsList({
               type="checkbox"
               name={title}
               value={option}
-              checked={promptParams.cuisines.includes(option)}
+              checked={promptParams[title].includes(option)}
               onChange={handleCheckboxChange}
             />
             {option}

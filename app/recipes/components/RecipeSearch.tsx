@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { getNewRecipe } from "@/app/services/api/getNewRecipe";
 import { camelCaseToWords } from "@/app/utils/camelCaseToWords";
 import RecipeCard from "@/app/components/RecipeCard";
@@ -45,6 +45,10 @@ export default function RecipeSearch({ options }: Props) {
   const [recipeResponse, setRecipeResponse] = useState<
     CreateCompletionResponse[]
   >([]);
+
+  useEffect(() => {
+    console.log("promptParams", promptParams);
+  }, [promptParams]);
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
