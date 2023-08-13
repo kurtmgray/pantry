@@ -163,6 +163,7 @@ export default function RecipeSearch({ options }: Props) {
       </div>
 
       <div>
+        {/* implement Formik for this */}
         <div className={styles.inputDiv}>
           <input
             className={styles.searchInput}
@@ -180,7 +181,7 @@ export default function RecipeSearch({ options }: Props) {
               value={newKeyword}
               onChange={(e) => setNewKeyword(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button type="submit">Add</button>
           </form>
           <form onSubmit={handleAddParam}>
             <input
@@ -191,7 +192,7 @@ export default function RecipeSearch({ options }: Props) {
               value={newAllergy}
               onChange={(e) => setNewAllergy(e.target.value)}
             />
-            <button type="submit">Submit</button>
+            <button type="submit">Add</button>
           </form>
         </div>
 

@@ -1,19 +1,21 @@
 "use client";
-import { MouseEvent, useEffect } from "react";
-import { useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CustomSession } from "@/lib/types";
 import { generateRecipeImage } from "@/app/services/api/getNewRecipe";
 import Image from "next/image";
+import RecipeStatusComponent from "./RecipeStatusComponent";
+import { postNewRecipe } from "../services/api/postNewRecipe";
 
 type Props = {
   recipe: RecipeDB | RecipeGPT;
 };
 
-enum Status {
+export enum Status {
   NOT_SAVED,
   SAVING,
   SAVED,
+  FAILED,
 }
 
 export default function RecipeCard({ recipe }: Props) {
@@ -33,7 +35,7 @@ export default function RecipeCard({ recipe }: Props) {
     : (recipeData = recipe as RecipeGPT);
 
   useEffect(() => {
-    console.log(recipe);
+    console.log(Status);
     if (isDBRecipe) {
       setRecipeStatus(null);
     } else {
@@ -62,30 +64,8 @@ export default function RecipeCard({ recipe }: Props) {
       };
     }
     // TODO: extract to api service
-    try {
-      const response = await fetch(`/api/recipes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(recipeData),
-      });
-
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        // logic or feedback after success
-      } else {
-        console.error("Error saving recipe:", response.statusText);
-        // error handling
-      }
-    } catch (error) {
-      console.error("Error saving recipe:", error);
-      // additional error handling
-    }
-
-    setRecipeStatus(Status.SAVED);
+    const response = await postNewRecipe(recipeData);
+    response ? setRecipeStatus(Status.SAVED) : setRecipeStatus(Status.FAILED);
   };
 
   return (
@@ -120,11 +100,10 @@ export default function RecipeCard({ recipe }: Props) {
       {/* {image && (
         <Image src={image} alt="recipe image" width={256} height={256} />
       )} */}
-      {recipeStatus === Status.NOT_SAVED && (
-        <button onClick={(e) => handleSaveRecipe(e)}>Save Recipe</button>
-      )}
-      {recipeStatus === Status.SAVING && <p>Saving Recipe...</p>}
-      {recipeStatus === Status.SAVED && <p>Recipe Saved!</p>}
+      <RecipeStatusComponent
+        status={recipeStatus}
+        handleSaveRecipe={handleSaveRecipe}
+      />
     </div>
   );
 }

@@ -32,8 +32,8 @@ type PromptParams = {
   category: RecipeCategory[]; 
 };
 
-type RecipeCategory =
-  "Side" | "Appetizer" | "Breakfast" | "Lunch" | "Dinner" | "Dessert" | "Snack" | "Drink" | ""
+// type RecipeCategory =
+//   "Side" | "Appetizer" | "Breakfast" | "Lunch" | "Dinner" | "Dessert" | "Snack" | "Drink" 
 
 type CheckboxNames = "maxPrepTime" | "allergies" | "ingredients" | "cuisines" | "dietaryPreferences";
 
@@ -42,7 +42,7 @@ type MenuOptions = {
   dietaryPreferences: string[];
   maxPrepTimeOptions: number[];
   difficulty: string[];
-  category: RecipeCategory[];
+  category: string[];
 };
 
 // type ParsedRecipe = {
@@ -114,3 +114,4 @@ type PantryItem = EdamamIngredient["food"] & {
 };
 
 type PantryItemsCallback = (items: PantryItem[]) => void;
+
