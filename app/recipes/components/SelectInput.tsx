@@ -1,10 +1,10 @@
-import React from "react";
+import { ChangeEvent } from "react";
 import styles from "../Recipes.module.css";
 
 type Props = {
   options: string[] | number[];
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   name: string;
   placeholder?: string;
 };

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { fetchRecipes } from "@/app/api/fetchRecipes";
+import { fetchRecipes } from "@/app/services/api/fetchRecipes";
 
 export function useRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     fetchRecipes().then(data => {
@@ -11,11 +12,12 @@ export function useRecipes() {
       setIsLoading(false);
     }).catch(error => {
       console.error("Failed to fetch pantry items from hook:", error);
+      setError(error)
       setIsLoading(false);
     });
   }, []);
 
-  return { recipes, isLoading };
+  return { recipes, isLoading, error };
 }
 
 //TODO: implement use in /recipes

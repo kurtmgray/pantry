@@ -6,22 +6,15 @@ import { generateRecipeImage } from "@/app/services/api/getNewRecipe";
 import Image from "next/image";
 import RecipeStatusComponent from "./RecipeStatusComponent";
 import { postNewRecipe } from "../services/api/postNewRecipe";
+import { Status } from "@/lib/types";
 
 type Props = {
   recipe: RecipeDB | RecipeGPT;
 };
 
-export enum Status {
-  NOT_SAVED,
-  SAVING,
-  SAVED,
-  FAILED,
-}
-
 export default function RecipeCard({ recipe }: Props) {
-  // const { id, title, summary, image, preptime, cooktime, ingredients } = recipe;
-
   // TODO: status in parent?
+
   const [recipeStatus, setRecipeStatus] = useState<Status | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const session = useSession();
@@ -35,7 +28,6 @@ export default function RecipeCard({ recipe }: Props) {
     : (recipeData = recipe as RecipeGPT);
 
   useEffect(() => {
-    console.log(Status);
     if (isDBRecipe) {
       setRecipeStatus(null);
     } else {
@@ -63,7 +55,6 @@ export default function RecipeCard({ recipe }: Props) {
         // image: image!,
       };
     }
-    // TODO: extract to api service
     const response = await postNewRecipe(recipeData);
     response ? setRecipeStatus(Status.SAVED) : setRecipeStatus(Status.FAILED);
   };
@@ -72,7 +63,10 @@ export default function RecipeCard({ recipe }: Props) {
     <div className="recipe">
       {/* <RecipeImage recipeImagePrompt={recipeData.summary} /> */}
       <h2 className="recipe__title">{recipeData.title}</h2>
+      <br />
+
       <h3 className="recipe__description">{recipeData.summary}</h3>
+      <br />
       <p className="recipe__time">Prep Time: {recipeData.preptime}</p>
       <p className="recipe__time">Cook Time: {recipeData.cooktime}</p>
       <p className="recipe__ingredients-heading">Ingredients:</p>

@@ -54,6 +54,7 @@ export default function RecipeSearch({ options }: Props) {
     const { value, checked } = event.target;
 
     // TODO: standardize type guards (see Notion page)
+    // or just implement Formik
     const name = event.target.name as CheckboxNames;
     console.log(name, value, checked);
 

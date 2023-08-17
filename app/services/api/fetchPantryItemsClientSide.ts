@@ -1,5 +1,5 @@
 
-export const fetchPantryItemsClient = async (clientUserId: string) => {
+export const fetchPantryItemsClientSide = async (clientUserId: string) => {
   
   // user is verified through client-side session and passed in as clientUserId
   
