@@ -4,6 +4,7 @@ import DashRecipeCard from "@/app/dashboard/components/DashRecipeCard";
 import LocalSearchBar from "@/app/components/LocalSearchBar";
 import { useState, useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
+import styles from "@/styles/Dashboard.module.css";
 
 import React from "react";
 
@@ -35,9 +36,9 @@ export default function SearchableList({ initialRecipes }: Props) {
       title.toLowerCase().includes(lowerKeyword)
     );
   });
-
+  // TODO: working dashboard styles
   return (
-    <div>
+    <div className="dash__recipe_card-container">
       <LocalSearchBar searchArea="recipes" handleChange={handleInputChange} />
 
       {filteredRecipes.length > 0 ? (

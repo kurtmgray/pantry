@@ -1,7 +1,7 @@
 import RecipePage from "./components/RecipePage";
 import { fetchSingleRecipe } from "@/app/services/api/fetchSingleRecipe";
 
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 type Props = {
   params: { recipeId: string };
 };

@@ -12,9 +12,9 @@ function generateRandomNumber() {
 
 export default function DashRecipeCard({ recipe }: Props) {
   return (
-    <div className="dash__recipe_card">
+    <div className="dash__recipe_card-container">
       <Link href={`/recipes/${recipe.id}`} className="dash__recipe__card-link">
-        <div className="dash__recipe__card-container">
+        <div className="dash__recipe__card">
           <Image
             src={
               recipe.image ||

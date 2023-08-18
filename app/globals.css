@@ -157,12 +157,13 @@ main {
   margin: 20px;
 }
 
-.dash__recipe__card {
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  padding: 20px;
+.dash__recipe__card-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 1rem;
+  gap: 20px;
+  max-width: 600px;
 }
 
 .dash__recipe__card-link {
@@ -170,15 +171,21 @@ main {
   color: inherit;
 }
 
-.dash__recipe__card-container {
+.dash__recipe__card {
   display: flex;
   align-items: center;
   cursor: pointer;
-
   padding: 1rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  gap: 20px;
+  width: 100%;
 }
 
-.dash__recipe__card-container img {
+.dash__recipe__card img {
   width: 150px;
   height: 150px;
   object-fit: cover;
@@ -192,17 +199,17 @@ main {
   flex: 1;
 }
 
-.dash__recipe__card-container:hover {
+.dash__recipe__card:hover {
   box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
 }
 
-.dash__recipe__card-container h2 {
+.dash__recipe__card h2 {
   font-family: "Amatic SC", sans-serif;
   font-size: 24px;
   font-weight: bold;
 }
 
-.dash__recipe__card-container h3 {
+.dash__recipe__card h3 {
   font-family: "Playfair Display", sans-serif;
   font-size: 16px;
   font-weight: normal;
