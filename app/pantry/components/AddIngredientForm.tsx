@@ -1,10 +1,13 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useRef, ChangeEvent, FormEvent, useEffect } from "react";
 import { useGlobalState } from "@/app/providers";
 import { getIngredientToAdd } from "@/app/services/api//getIngredientToAdd";
 import { postNewPantryItem } from "@/app/services/api/postNewPantryItem";
 import IngredientCard from "./IngredientCard";
 import { Spin } from "antd";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import IngredientSearchForm from "./IngredientSearchForm";
 
 type Props = {
   formStyles: { [key: string]: string };
@@ -12,100 +15,92 @@ type Props = {
 
 export default function AddIngredientForm({ formStyles }: Props) {
   const { setState } = useGlobalState();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [ingredientSearch, setIngredientSearch] = useState({
-    name: "",
-    brand: "",
-  });
   const [ingredientsFromEdamam, setIngredientsFromEdamam] = useState<
     EdamamIngredient[]
   >([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const [displayNotFound, setDisplayNotFound] = useState(false);
 
-  const handleAddPantryItem = async (
-    ingredientFromEdamam: EdamamIngredient
-  ) => {
-    const addedItem = await postNewPantryItem(ingredientFromEdamam);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [notFoundStatus, setNotFoundStatus] = useState(false);
 
-    setState((state: GlobalState) => {
-      return { ...state, pantry: [...state.pantry, addedItem] };
-    });
-  };
+  useEffect(() => {
+    // return called on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setIngredientSearch((prevIngredient) => ({
-      ...prevIngredient,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsFetching(true);
-    console.log("Looking for ingredient:", ingredientSearch);
-
-    const ingredients = await getIngredientToAdd(
-      ingredientSearch.name,
-      ingredientSearch.brand
-    );
-    if (ingredients && ingredients.length > 0) {
-      setIngredientsFromEdamam(ingredients);
-      console.log("Ingredients from Edamam:", ingredients);
-    } else {
-      setDisplayNotFound(true);
-      setTimeout(() => {
-        setDisplayNotFound(false);
-      }, 5000);
-    }
-
-    setIngredientSearch({
+  const formik = useFormik({
+    initialValues: {
       name: "",
       brand: "",
-    });
-    setIsFetching(false);
-  };
-
-  const handleCreatePantryItem = async (ingredient: EdamamIngredient) => {
-    console.log(ingredient);
-    handleAddPantryItem(ingredient);
-    setIngredientsFromEdamam([]);
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Name is required"),
+    }),
+    onSubmit: async (values, { setSubmitting, setStatus }) => {
+      try {
+        const ingredients = await getIngredientToAdd(values.name, values.brand);
+        if (ingredients && ingredients.length > 0) {
+          setIngredientsFromEdamam(ingredients);
+        } else {
+          setNotFoundStatus(true);
+          timeoutRef.current = setTimeout(() => {
+            setNotFoundStatus(false);
+          }, 5000);
+        }
+        formik.resetForm();
+        setSubmitting(false);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setStatus(error.message);
+        } else {
+          setStatus("An unexpected error occurred.");
+        }
+        setSubmitting(false);
+      }
+    },
+  });
+  const handleCreatePantryItem = async (
+    ingredientFromEdamam: EdamamIngredient
+  ) => {
+    try {
+      const addedItem = await postNewPantryItem(ingredientFromEdamam);
+      setState((state: GlobalState) => {
+        return { ...state, pantry: [...state.pantry, addedItem] };
+      });
+      setIngredientsFromEdamam([]);
+      setErrorMsg(null);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMsg(error.message);
+      } else {
+        setErrorMsg("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
     <div>
       <h1>Search for food items:</h1>
       <div className={formStyles.searchBar}>
-        {isFetching ? (
+        {formik.isSubmitting ? (
           <h1 className={formStyles.loading}> Loading... {<Spin />}</h1>
         ) : (
-          <form className={formStyles.form} onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Food"
-              value={ingredientSearch.name}
-              onChange={(e) => handleInputChange(e)}
-            />
-            <input
-              type="text"
-              name="brand"
-              placeholder="Brand"
-              value={ingredientSearch.brand}
-              onChange={(e) => handleInputChange(e)}
-            />
-            <button type="submit">Submit</button>
-          </form>
+          <IngredientSearchForm formik={formik} formStyles={formStyles} />
         )}
-        {displayNotFound && (
+        {notFoundStatus && (
           <p className={formStyles.notAvailable}>Ingredient not available.</p>
         )}
+        {formik.status && (
+          <div className={formStyles.errorGlobal}>{errorMsg}</div>
+        )}
         {ingredientsFromEdamam.length > 0 &&
-          !displayNotFound &&
-          !isFetching && (
+          !notFoundStatus &&
+          !formik.isSubmitting && (
             <button onClick={() => setIngredientsFromEdamam([])}>
               Clear Search Results
             </button>
@@ -124,5 +119,3 @@ export default function AddIngredientForm({ formStyles }: Props) {
     </div>
   );
 }
-
-// TODO: working on ingredient not available message

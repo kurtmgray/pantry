@@ -4,6 +4,19 @@ import { getUserById } from "@/lib/prisma";
 //TODO: finish this to get user -> for use on /profile
 //TODO: standardize return on all api routes, use http status codes
 
+
+
+
+
+
+// NOT CURRENTLY IN USE
+
+
+
+
+
+
+
 export async function GET(request: NextRequest) {
     const userId = request.nextUrl.searchParams.get("id");
     if (userId) {    

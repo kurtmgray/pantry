@@ -19,7 +19,7 @@ export async function getRecipeById(id: number) {
   });
 }
 
-export async function getRecipesById(id: number) {
+export async function getRecipesByUserId(id: number) {
   return prisma.recipe.findMany({
     where: {
       addedBy: { id: id },

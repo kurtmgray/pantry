@@ -10,18 +10,15 @@ export async function GET(request: NextRequest) {
 
   if (userId) {
     try {
-      // const userId = parseInt(session.user.id);
-      console.log("userId", userId);  
       const pantryItems = await getPantryItemsByUserId(parseInt(userId));
       return NextResponse.json(pantryItems);
     } catch (error) {
-      return NextResponse.error();
+      return NextResponse.json({ error:  "Error getting PantryItems."}, { status: 500 });
     } finally {
       await prisma.$disconnect();
-      console.log("Disconnected from Prisma.");
     }
   } else {
-    return new Response(null, { status: 401, statusText: "No user id." });
+    return NextResponse.json({ error: 'Bad request: No user id.' }, { status: 400 });
   }
 }
 
@@ -50,15 +47,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(pantryItem);
       } catch (error) {
         console.error("Error creating PantryItem:", error);
-        return NextResponse.error()
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
       } finally {
         await prisma.$disconnect();
       }
     } else {
-      return new Response(null, { status: 401, statusText: "Unauthorized" });
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
   } else {
     console.error("Error creating PantryItem: foodId is undefined");
+    return NextResponse.json({ error: 'Bad Request: foodId is undefined' }, { status: 400 });
+
   }
 }
 
@@ -73,16 +72,18 @@ export async function DELETE(request: NextRequest) {
       if (ingredientId){
         const deletedPantryItem = await deletePantryItem(parseInt(ingredientId));
         console.log("Deleted PantryItem:", deletedPantryItem);
-        return NextResponse.json({ message: "Ingredient deleted successfully" });
+        return NextResponse.json({ message: "Ingredient deleted successfully" }, { status: 200 });
+      } else {
+        return NextResponse.json({ error: 'Bad Request: No ingredient id.' }, { status: 400 });
       }
 
     } catch (error) {
       console.error("Error deleting PantryItem:", error);
-      return NextResponse.error();
+      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     } finally {
       await prisma.$disconnect();
     }
   } else {
-    return new Response(null, { status: 401, statusText: "Unauthorized" });
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 }
