@@ -44,6 +44,7 @@ export const authOptions: NextAuthOptions = {
           console.log("no match");
           return null;
         }
+        console.log(user)
         // this return gets passed to the jwt callback below
         return {
           id: user.id.toString(),
@@ -74,6 +75,9 @@ export const authOptions: NextAuthOptions = {
         return { ...token, id: u.id };
       }
       return token;
+    },
+    redirect({ url, baseUrl }) {
+      return `${baseUrl}/dashboard`;
     },
   },
 };

@@ -1,8 +1,28 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
+"use client";
+import { useEffect } from "react";
+import { useGlobalState } from "../providers";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
-export default async function Profile() {
-  const session = await getServerSession(authOptions);
-  return <div>{JSON.stringify(session, null, 4)}</div>;
+export default function Profile() {
+  const session = useSession();
+  const { state, setState } = useGlobalState();
+
+  const user = session.data?.user; // Assuming your session data contains user information
+  const { pantry, recipes } = state;
+
+  return (
+    <div>
+      <h1>Profile Page</h1>
+      <h2>Welcome, {user?.name || "Guest"}</h2>
+      <p>Email: {user?.email || "N/A"}</p>
+      <h3>Saved Items</h3>
+      <p>Saved Pantry Items: {pantry.length}</p>
+      <p>Saved Recipes: {recipes.length}</p>
+
+      <h3>Actions</h3>
+      <Link href="/profile/edit">Edit Profile</Link>
+      <pre>{JSON.stringify(state, null, 4)}</pre>
+    </div>
+  );
 }
