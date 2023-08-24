@@ -1,6 +1,5 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
 import { CustomSession } from "@/lib/types";
 
 export const fetchRecipes = async () => {
@@ -29,7 +28,6 @@ export const fetchRecipes = async () => {
         }
     } else {
         console.error("No email found in session"); 
-        return NextResponse.error();
     }
   };
   

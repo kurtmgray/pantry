@@ -56,6 +56,7 @@ export default function RecipeCard({ recipe }: Props) {
       };
     }
     const response = await postNewRecipe(recipeData);
+    // TODO: update global state?
     response ? setRecipeStatus(Status.SAVED) : setRecipeStatus(Status.FAILED);
   };
 

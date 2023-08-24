@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, Dispatch, SetStateAction } from "react";
+import React, { useEffect } from "react";
 import PantryItemCard from "./PantryItemCard";
 import { useGlobalState } from "@/app/providers";
-import { usePantryItems } from "@/app/hooks/usePantryItems";
 
 type Props = {
   listStyles: { [key: string]: string };
@@ -14,7 +13,6 @@ export default function PantryList({ listStyles, initialPantry }: Props) {
     state: { pantry },
     setState,
   } = useGlobalState();
-  // const { pantryItems, isLoading } = usePantryItems(); // fetch pantry items
 
   useEffect(() => {
     setState((state: GlobalState) => {
@@ -25,26 +23,21 @@ export default function PantryList({ listStyles, initialPantry }: Props) {
   return (
     <div className={listStyles.currentPantry}>
       <h2>Pantry List</h2>
-      {
-        // isLoading ? (
-        //   <p>Loading...</p>
-        // ) :
-        pantry.length === 0 ? (
-          <p>No items in the pantry</p>
-        ) : (
-          <div className={listStyles.pantryItem_container}>
-            {[...pantry]
-              .sort((a, b) => a.label.localeCompare(b.label))
-              .map((item) => (
-                <PantryItemCard
-                  key={item.id}
-                  itemStyles={listStyles}
-                  pantryItem={item}
-                />
-              ))}
-          </div>
-        )
-      }
+      {pantry.length === 0 ? (
+        <p>No items in the pantry</p>
+      ) : (
+        <div className={listStyles.pantryItem_container}>
+          {[...pantry]
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((item) => (
+              <PantryItemCard
+                key={item.id}
+                itemStyles={listStyles}
+                pantryItem={item}
+              />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

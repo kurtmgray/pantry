@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       console.error(error);
       return NextResponse.json({ error:  "Error saving recipe."}, { status: 500 });
     } finally {
-    
       await prisma.$disconnect();
     }
   } else {
@@ -32,7 +31,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error:  "Error getting recipes."}, { status: 500 })
       } finally {
         await prisma.$disconnect();
-        console.log("Disconnected from Prisma.");
       }
   } else {
     return NextResponse.json({ error: 'Bad request: No user id.' }, { status: 400 })

@@ -26,7 +26,10 @@ export default function PantryItemCard({ pantryItem, itemStyles }: Props) {
   };
 
   const handleDeleteItem = async () => {
+    // TODO: try/catch to keep state in sync with db
+
     const deletedItemId = await deletePantryItem(pantryItem.id);
+
     setState((state: GlobalState) => {
       return {
         ...state,
